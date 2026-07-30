@@ -1,0 +1,229 @@
+.stApp{
+    background:#F4F8FC;
+}
+
+/* Header */
+.header{
+    background:linear-gradient(90deg,#005BAC,#0077D9,#F7941D);
+    padding:25px;
+    border-radius:18px;
+    color:white;
+    margin-bottom:20px;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"]{
+    background:#005BAC;
+}
+
+section[data-testid="stSidebar"] *{
+    color:white;
+}
+/* KPI Card */
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.3s;
+    text-align:center;
+    border-top:6px solid #005BAC;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h1{
+    color: white !important;
+    font-size:52px;
+    font-weight:bold;
+}
+
+.card h2{
+    color:white !important;
+    font-size:38px;
+}
+
+.card p{
+    color:white !important;
+    font-size:20px;
+    font-weight:600;
+}
+
+.biru{
+    border-top:6px solid #005BAC;
+}
+
+.merah{
+    border-top:6px solid #E74C3C;
+}
+
+.hijau{
+    border-top:6px solid #2ECC71;
+}
+
+.orange{
+    border-top:6px solid #F7941D;
+}
+
+/* ========================= */
+/* Card Dokumen */
+/* ========================= */
+
+.dokumen-card{
+    background:white;
+    border-radius:15px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    border-left:6px solid #005BAC;
+    transition:0.3s;
+}
+
+.dokumen-card:hover{
+    transform:translateY(-5px);
+    border-left:6px solid #F7941D;
+}
+
+.dokumen-card h4{
+    color:#005BAC;
+    margin-bottom:8px;
+}
+
+.dokumen-card p{
+    margin:3px 0;
+    color:#555;
+
+    }
+    
+    .dokumen-card:hover{
+    
+    transform:translateY(-3px);
+    
+    border-left:8px solid #F7941D;
+    
+    }
+    /* ========================= */
+/* Input Pencarian */
+/* ========================= */
+
+.stTextInput input {
+    background-color: white !important;
+    color: #000000 !important;
+    border: 2px solid #d9d9d9 !important;
+    border-radius: 8px;
+}
+
+.stTextInput input::placeholder {
+    color: #888888 !important;
+}
+/* ========================= */
+/* WARNA KPI */
+/* ========================= */
+
+.biru{
+    background:linear-gradient(135deg,#005BAC,#1E88E5);
+}
+
+.merah{
+    background:linear-gradient(135deg,#E53935,#EF5350);
+}
+
+.hijau{
+    background:linear-gradient(135deg,#2E7D32,#43A047);
+}
+
+.orange{
+    background:linear-gradient(135deg,#F57C00,#FB8C00);
+}
+
+/* ===========================
+   PERBESAR UKURAN FONT
+=========================== */
+
+section[data-testid="stSidebar"] *{
+    font-size:20px !important;
+}
+
+.dokumen-card h4{
+    font-size:25px;
+    font-weight:bold;
+}
+
+.dokumen-card p{
+    font-size:19px;
+}
+
+.header h1{
+    font-size:55px;
+}
+
+.header h3{
+    font-size:35px;
+}
+
+.header p{
+    font-size:25px;
+}
+
+.card h1{
+    font-size:60px;
+    font-weight:bold;
+}
+
+.card h2{
+    font-size:48px;
+}
+
+.card p{
+    font-size:33px;
+}
+
+.stButton button{
+    font-size:23px !important;
+    font-weight:600;
+}
+
+.streamlit-expaderHeader{
+    font-size:25px !important;
+    font-weight:bold;
+}
+
+/* Judul Expander */
+details summary p{
+    font-size:20px !important;
+    font-weight:600 !important;
+}
+
+details summary{
+    font-size:20px !important;
+}
+/* Judul Expander */
+details summary p{
+    font-size:20px !important;
+    font-weight:600 !important;
+}
+
+details summary{
+    font-size:20px !important;
+}
+/* Sidebar */
+section[data-testid="stSidebar"] *{
+    font-size:25px !important;
+}
+/* Text Input */
+.stTextInput input{
+    font-size:18px !important;
+}
+/* Selectbox */
+.stSelectbox div{
+    font-size:18px !important;
+}
+h2{
+    font-size:40px !important;
+}
+.css-10trblm,
+.stCaption{
+    font-size:17px !important;
+}
