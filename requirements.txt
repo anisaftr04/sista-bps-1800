@@ -1,4 +1,7 @@
 streamlit
 pandas
 supabase
+plotly
+python-docx
+python-pptx
 openpyxl
