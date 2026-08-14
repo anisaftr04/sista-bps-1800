@@ -227,3 +227,18 @@ h2{
 .stCaption{
     font-size:17px !important;
 }
+
+/* Warna judul expander */
+details summary,
+details summary p {
+    color: #000 !important;
+}
+
+/* Isi expander */
+div[data-testid="stExpander"] {
+    color: #000 !important;
+}
+
+div[data-testid="stExpander"] * {
+    color: #000 !important;
+}

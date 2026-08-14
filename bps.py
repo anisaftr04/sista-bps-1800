@@ -31,6 +31,20 @@ def get_jenis_file(nama_file):
         return "PPT"
     else:
         return "Lainnya"
+    
+# =============================
+# DATA PENDIDIKAN
+# =============================
+
+def get_data_pendidikan():
+    response = (
+        supabase
+        .table("pendidikan_kemiskinan")
+        .select("*")
+        .execute()
+    )
+
+    return response.data
 
 # =============================
 # KONFIGURASI HALAMAN
