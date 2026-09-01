@@ -4,7 +4,12 @@ import plotly.express as px
 from supabase import create_client, Client
 from io import BytesIO
 
-from utils import load_css, admin_edit_button, set_toast, admin_import_data
+from utils import (
+    load_css,
+    admin_edit_button,
+    set_toast,
+    admin_import_data
+)
 
 
 # =========================================================
@@ -15,7 +20,7 @@ load_css()
 
 
 # =========================================================
-# CUSTOM CSS
+# BREADCRUMB
 # =========================================================
 
 st.markdown(
@@ -45,7 +50,7 @@ st.markdown(
 
     <div class="breadcrumb-container">
         <a href="/" target="_self">Beranda</a>
-        &gt; Statistik Sosial - Pengeluaran Makanan
+        &gt; Statistik Sosial - Kependudukan
     </div>
     """,
     unsafe_allow_html=True
@@ -89,7 +94,7 @@ DAFTAR_KABKOTA = [
 col_judul, col_edit = st.columns([8, 1])
 
 with col_judul:
-    st.title("🍚 Pengeluaran Perkapita untuk Makanan")
+    st.title("👥 Kependudukan")
 
 with col_edit:
     st.write("")
@@ -104,8 +109,15 @@ url = st.secrets["SUPABASE_URL"]
 key = st.secrets["SUPABASE_KEY"]
 service_key = st.secrets["SUPABASE_SERVICE_ROLE_KEY"]
 
-supabase: Client = create_client(url, key)
-supabase_admin: Client = create_client(url, service_key)
+supabase: Client = create_client(
+    url,
+    key
+)
+
+supabase_admin: Client = create_client(
+    url,
+    service_key
+)
 
 
 # =========================================================
@@ -113,7 +125,11 @@ supabase_admin: Client = create_client(url, service_key)
 # =========================================================
 
 daftar_data = {
-    "Pengeluaran Perkapita untuk Makanan": "pengeluaran_makanan"
+    "Jumlah Penduduk": "jumlah_penduduk",
+    "Kepadatan Penduduk": "kepadatan_penduduk",
+    "Laju Pertumbuhan Penduduk": "laju_pertumbuhan_penduduk",
+    "Rasio Jenis Kelamin": "rasio_jenis_kelamin",
+    "Persentase Penduduk": "persentase_penduduk"
 }
 
 
@@ -135,13 +151,17 @@ with col_f1:
     st.markdown("📊 **Pilih Indikator**")
 
     indikator_input = st.selectbox(
-        "📊 Pilih Data Pengeluaran Makanan",
+        "📊 Pilih Data Kependudukan",
         list(daftar_data.keys()),
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        key="indikator_kependudukan"
     )
 
 
-nama_tabel_input = daftar_data[indikator_input]
+nama_tabel_input = daftar_data.get(
+    indikator_input,
+    "jumlah_penduduk"
+)
 
 
 # =========================================================
@@ -150,24 +170,27 @@ nama_tabel_input = daftar_data[indikator_input]
 
 try:
 
-    response_tahun = (
+    resp_opt = (
         supabase
         .table(nama_tabel_input)
         .select("tahun")
         .execute()
     )
 
-    df_tahun = pd.DataFrame(response_tahun.data)
+    df_opt = pd.DataFrame(resp_opt.data)
 
-    if not df_tahun.empty and "tahun" in df_tahun.columns:
+    if (
+        not df_opt.empty
+        and "tahun" in df_opt.columns
+    ):
 
-        df_tahun["tahun"] = pd.to_numeric(
-            df_tahun["tahun"],
+        df_opt["tahun"] = pd.to_numeric(
+            df_opt["tahun"],
             errors="coerce"
         )
 
-        daftar_tahun = sorted(
-            df_tahun["tahun"]
+        daftar_tahun_opt = sorted(
+            df_opt["tahun"]
             .dropna()
             .unique()
             .astype(int),
@@ -176,65 +199,12 @@ try:
 
     else:
 
-        daftar_tahun = []
+        daftar_tahun_opt = []
 
 
 except Exception:
 
-    daftar_tahun = []
-
-
-# =========================================================
-# PILIH TAHUN
-# =========================================================
-
-with col_f2:
-
-    st.markdown("📅 **Tahun**")
-
-    semua_tahun = st.checkbox(
-        "Pilih Semua",
-        value=True,
-        key="chk_semua_tahun_pm"
-    )
-
-    prev_key_tahun = "_prev_chk_semua_tahun_pm"
-
-    if prev_key_tahun not in st.session_state:
-
-        st.session_state[prev_key_tahun] = semua_tahun
-
-    elif st.session_state[prev_key_tahun] != semua_tahun:
-
-        for thn in daftar_tahun:
-
-            st.session_state[
-                f"thn_{thn}_pm"
-            ] = semua_tahun
-
-        st.session_state[prev_key_tahun] = semua_tahun
-
-
-    with st.container(height=160):
-
-        tahun_terpilih_input = []
-
-        if daftar_tahun:
-
-            for thn in daftar_tahun:
-
-                cek = st.checkbox(
-                    str(thn),
-                    value=semua_tahun,
-                    key=f"thn_{thn}_pm"
-                )
-
-                if cek:
-                    tahun_terpilih_input.append(int(thn))
-
-        else:
-
-            st.warning("Tidak ada data tahun.")
+    daftar_tahun_opt = []
 
 
 # =========================================================
@@ -243,24 +213,24 @@ with col_f2:
 
 try:
 
-    response_wilayah = (
+    resp_wil_opt = (
         supabase
         .table(nama_tabel_input)
         .select("kabupaten_kota")
         .execute()
     )
 
-    df_wilayah_opt = pd.DataFrame(
-        response_wilayah.data
+    df_wil_opt = pd.DataFrame(
+        resp_wil_opt.data
     )
 
     if (
-        not df_wilayah_opt.empty
-        and "kabupaten_kota" in df_wilayah_opt.columns
+        not df_wil_opt.empty
+        and "kabupaten_kota" in df_wil_opt.columns
     ):
 
-        daftar_wilayah = sorted(
-            df_wilayah_opt[
+        daftar_wilayah_opt = sorted(
+            df_wil_opt[
                 "kabupaten_kota"
             ]
             .dropna()
@@ -269,67 +239,148 @@ try:
 
     else:
 
-        daftar_wilayah = []
+        daftar_wilayah_opt = []
 
 
 except Exception:
 
-    daftar_wilayah = []
+    daftar_wilayah_opt = []
 
 
 # =========================================================
-# PILIH KABUPATEN / KOTA
+# FILTER TAHUN
+# =========================================================
+
+with col_f2:
+
+    st.markdown("📅 **Tahun**")
+
+    semua_tahun_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key=f"chk_semua_tahun_penduduk_{indikator_input}"
+    )
+
+    prev_key_tahun = (
+        f"_prev_chk_semua_tahun_penduduk_"
+        f"{indikator_input}"
+    )
+
+    if prev_key_tahun not in st.session_state:
+
+        st.session_state[
+            prev_key_tahun
+        ] = semua_tahun_chk
+
+    elif (
+        st.session_state[
+            prev_key_tahun
+        ] != semua_tahun_chk
+    ):
+
+        for thn in daftar_tahun_opt:
+
+            st.session_state[
+                f"thn_penduduk_{thn}_{indikator_input}"
+            ] = semua_tahun_chk
+
+        st.session_state[
+            prev_key_tahun
+        ] = semua_tahun_chk
+
+
+    with st.container(height=160):
+
+        tahun_terpilih_input = []
+
+        if daftar_tahun_opt:
+
+            for thn in daftar_tahun_opt:
+
+                cek = st.checkbox(
+                    str(thn),
+                    value=semua_tahun_chk,
+                    key=(
+                        f"thn_penduduk_"
+                        f"{thn}_{indikator_input}"
+                    )
+                )
+
+                if cek:
+                    tahun_terpilih_input.append(
+                        int(thn)
+                    )
+
+        else:
+
+            st.warning(
+                "Tidak ada data tahun."
+            )
+
+
+# =========================================================
+# FILTER KABUPATEN / KOTA
 # =========================================================
 
 with col_f3:
 
     st.markdown("📍 **Kabupaten/Kota**")
 
-    semua_wilayah = st.checkbox(
+    semua_wilayah_chk = st.checkbox(
         "Pilih Semua",
         value=True,
-        key="chk_semua_wilayah_pm"
+        key=f"chk_semua_wilayah_penduduk_{indikator_input}"
     )
 
-    prev_key_wilayah = "_prev_chk_semua_wilayah_pm"
+    prev_key_wilayah = (
+        f"_prev_chk_semua_wilayah_penduduk_"
+        f"{indikator_input}"
+    )
 
     if prev_key_wilayah not in st.session_state:
 
         st.session_state[
             prev_key_wilayah
-        ] = semua_wilayah
+        ] = semua_wilayah_chk
 
-    elif st.session_state[
-        prev_key_wilayah
-    ] != semua_wilayah:
+    elif (
+        st.session_state[
+            prev_key_wilayah
+        ] != semua_wilayah_chk
+    ):
 
-        for wil in daftar_wilayah:
+        for wil in daftar_wilayah_opt:
 
             st.session_state[
-                f"wil_{wil}_pm"
-            ] = semua_wilayah
+                f"wil_penduduk_{wil}_{indikator_input}"
+            ] = semua_wilayah_chk
 
         st.session_state[
             prev_key_wilayah
-        ] = semua_wilayah
+        ] = semua_wilayah_chk
 
 
     with st.container(height=160):
 
         wilayah_terpilih_input = []
 
-        if daftar_wilayah:
+        if daftar_wilayah_opt:
 
-            for wil in daftar_wilayah:
+            for wil in daftar_wilayah_opt:
 
                 cek_wil = st.checkbox(
                     wil,
-                    value=semua_wilayah,
-                    key=f"wil_{wil}_pm"
+                    value=semua_wilayah_chk,
+                    key=(
+                        f"wil_penduduk_"
+                        f"{wil}_{indikator_input}"
+                    )
                 )
 
                 if cek_wil:
-                    wilayah_terpilih_input.append(wil)
+                    wilayah_terpilih_input.append(
+                        wil
+                    )
 
         else:
 
@@ -351,40 +402,40 @@ submitted = st.button(
 
 
 # =========================================================
-# SIMPAN FILTER
+# SIMPAN FILTER KE SESSION STATE
 # =========================================================
 
 if submitted:
 
     st.session_state[
-        "submitted_pm"
+        "submitted_penduduk"
     ] = True
 
     st.session_state[
-        "indikator_final_pm"
+        "indikator_final_penduduk"
     ] = indikator_input
 
     st.session_state[
-        "tahun_final_pm"
+        "tahun_final_penduduk"
     ] = tahun_terpilih_input
 
     st.session_state[
-        "wilayah_final_pm"
+        "wilayah_final_penduduk"
     ] = wilayah_terpilih_input
 
 
 # =========================================================
-# JIKA BELUM SUBMIT
+# BELUM SUBMIT
 # =========================================================
 
 if not st.session_state.get(
-    "submitted_pm",
+    "submitted_penduduk",
     False
 ):
 
     st.info(
-        "👆 Silakan sesuaikan pilihan tahun dan "
-        "wilayah di atas, lalu klik tombol "
+        "👆 Silakan sesuaikan pilihan indikator, "
+        "tahun, dan wilayah di atas, lalu klik tombol "
         "**Tampilkan Data**."
     )
 
@@ -396,20 +447,21 @@ if not st.session_state.get(
 # =========================================================
 
 indikator = st.session_state.get(
-    "indikator_final_pm",
+    "indikator_final_penduduk",
     list(daftar_data.keys())[0]
 )
 
 nama_tabel = daftar_data[indikator]
 
 tahun_terpilih = st.session_state.get(
-    "tahun_final_pm",
+    "tahun_final_penduduk",
     []
 )
 
 wilayah_terpilih = st.session_state.get(
-    "wilayah_final_pm",
-    [])
+    "wilayah_final_penduduk",
+    []
+)
 
 
 # =========================================================
@@ -422,10 +474,9 @@ if (
 ):
 
     st.warning(
-        "⚠️ Tahun atau Kabupaten/Kota belum "
-        "ada yang dicentang. Silakan centang "
-        "minimal satu lalu klik "
-        "**Tampilkan Data**."
+        "⚠️ Tahun atau Kabupaten/Kota belum ada "
+        "yang dicentang. Silakan centang minimal satu "
+        "lalu klik **Tampilkan Data**."
     )
 
     st.stop()
@@ -462,12 +513,15 @@ except Exception as e:
 if not data:
 
     st.warning(
-        "Data Pengeluaran Perkapita untuk "
-        "Makanan belum tersedia."
+        f"Data {indikator} belum tersedia."
     )
 
     st.stop()
 
+
+# =========================================================
+# DATAFRAME
+# =========================================================
 
 df = pd.DataFrame(data)
 
@@ -479,29 +533,28 @@ df = pd.DataFrame(data)
 kolom_wajib_data = [
     "tahun",
     "kabupaten_kota",
-    "miskin",
-    "tidak_miskin",
-    "miskin_dan_tidak_miskin"
+    "nilai"
 ]
 
 kolom_tidak_ada = [
-    kolom
-    for kolom in kolom_wajib_data
-    if kolom not in df.columns
+    kol
+    for kol in kolom_wajib_data
+    if kol not in df.columns
 ]
 
 if kolom_tidak_ada:
 
     st.error(
-        "Kolom berikut tidak ditemukan di tabel "
-        f"`{nama_tabel}`: {', '.join(kolom_tidak_ada)}"
+        "Kolom berikut tidak ditemukan pada tabel "
+        f"`{nama_tabel}`: "
+        f"{', '.join(kolom_tidak_ada)}"
     )
 
     st.stop()
 
 
 # =========================================================
-# KONVERSI DATA NUMERIK
+# KONVERSI DATA
 # =========================================================
 
 df["tahun"] = pd.to_numeric(
@@ -509,22 +562,16 @@ df["tahun"] = pd.to_numeric(
     errors="coerce"
 )
 
-for kolom in [
-    "miskin",
-    "tidak_miskin",
-    "miskin_dan_tidak_miskin"
-]:
-
-    df[kolom] = pd.to_numeric(
-        df[kolom],
-        errors="coerce"
-    )
-
+df["nilai"] = pd.to_numeric(
+    df["nilai"],
+    errors="coerce"
+)
 
 df = df.dropna(
     subset=[
         "tahun",
-        "kabupaten_kota"
+        "kabupaten_kota",
+        "nilai"
     ]
 )
 
@@ -553,8 +600,7 @@ df_filtered = df[
 st.markdown("---")
 
 st.subheader(
-    ":material/rice_bowl: "
-    "Pengeluaran Perkapita untuk Makanan"
+    f":material/groups: {indikator}"
 )
 
 st.write(
@@ -565,105 +611,87 @@ st.write(
 
 
 # =========================================================
-# DATA TIDAK DITEMUKAN
+# TABEL PIVOT
+# BARIS = WILAYAH
+# KOLOM = TAHUN
 # =========================================================
 
-if df_filtered.empty:
+if not df_filtered.empty:
 
-    st.warning(
-        "Tidak ada data yang sesuai dengan "
-        "filter yang dipilih."
-    )
-
-else:
-
-    # =====================================================
-    # TABEL PIVOT
-    # =====================================================
-
-    df_long = df_filtered.melt(
-        id_vars=[
-            "tahun",
-            "kabupaten_kota"
-        ],
-        value_vars=[
-            "miskin",
-            "tidak_miskin",
-            "miskin_dan_tidak_miskin"
-        ],
-        var_name="kategori",
-        value_name="nilai"
-    )
-
-
-    nama_kategori = {
-        "miskin": "Miskin",
-        "tidak_miskin": "Tidak Miskin",
-        "miskin_dan_tidak_miskin":
-            "Miskin dan Tidak Miskin"
-    }
-
-    df_long["kategori"] = (
-        df_long["kategori"]
-        .map(nama_kategori)
-    )
-
-
-    # =====================================================
-    # TABEL
-    # =====================================================
-
-    st.subheader(":material/list_alt: Data")
-
-
-    df_tampilkan = df_long.pivot_table(
-        index=[
-            "kabupaten_kota",
-            "kategori"
-        ],
+    df_pivot = df_filtered.pivot_table(
+        index="kabupaten_kota",
         columns="tahun",
         values="nilai",
-        aggfunc="first"
+        aggfunc="sum"
     ).reset_index()
 
 
-    df_tampilkan = df_tampilkan.rename(
-        columns={
-            "kabupaten_kota":
-                "Kabupaten/Kota",
-            "kategori":
-                "Kategori"
-        }
-    )
+    # =====================================================
+    # URUTKAN TAHUN
+    # =====================================================
 
-
-    kolom_tahun = sorted(
+    kolom_tahun_urut = sorted(
         [
             col
-            for col in df_tampilkan.columns
+            for col in df_pivot.columns
             if isinstance(col, int)
         ]
     )
 
 
-    # Format angka
-    df_tabel_display = df_tampilkan.copy()
+    df_pivot = df_pivot[
+        ["kabupaten_kota"]
+        + kolom_tahun_urut
+    ]
 
-    for col in kolom_tahun:
 
-        df_tabel_display[col] = (
-            df_tabel_display[col]
+    # =====================================================
+    # RENAME KOLOM
+    # =====================================================
+
+    df_pivot = df_pivot.rename(
+        columns={
+            "kabupaten_kota":
+                "Kabupaten/Kota"
+        }
+    )
+
+
+    # =====================================================
+    # FORMAT NILAI
+    # =====================================================
+
+    df_tampilkan = df_pivot.copy()
+
+    for col in kolom_tahun_urut:
+
+        df_tampilkan[col] = (
+            df_tampilkan[col]
             .apply(
                 lambda x:
-                f"{x:,.2f}".replace(",", ".")
+                f"{x:,.2f}".replace(
+                    ",", "X"
+                ).replace(
+                    ".", ","
+                ).replace(
+                    "X", "."
+                )
                 if pd.notnull(x)
                 else "-"
             )
         )
 
 
+    # =====================================================
+    # TABEL
+    # =====================================================
+
+    st.subheader(
+        ":material/list_alt: Data"
+    )
+
     st.dataframe(
-        df_tabel_display,
+        df_tampilkan,
         use_container_width=True,
         hide_index=True
     )
@@ -680,10 +708,10 @@ else:
         engine="openpyxl"
     ) as writer:
 
-        df_tabel_display.to_excel(
+        df_tampilkan.to_excel(
             writer,
             index=False,
-            sheet_name="Pengeluaran Makanan"
+            sheet_name="Kependudukan"
         )
 
     output.seek(0)
@@ -693,8 +721,8 @@ else:
         label="📥 Download Excel",
         data=output,
         file_name=(
-            "Pengeluaran_Makanan_"
-            f"{len(wilayah_terpilih)}Wilayah.xlsx"
+            f"Kependudukan_"
+            f"{indikator}.xlsx"
         ),
         mime=(
             "application/"
@@ -708,38 +736,42 @@ else:
     # GRAFIK
     # =====================================================
 
-    st.subheader(
-        "📈 Perkembangan Pengeluaran Perkapita "
-        "untuk Makanan"
-    )
-
-
     fig = px.line(
-        df_long,
+        df_filtered,
         x="tahun",
         y="nilai",
         color="kabupaten_kota",
-        line_dash="kategori",
         markers=True,
         title=(
-            "Perkembangan Pengeluaran Perkapita "
-            "untuk Makanan Berdasarkan Wilayah"
+            f"{indikator} Berdasarkan Wilayah"
         )
     )
 
 
     fig.update_layout(
         xaxis_title="Tahun",
-        yaxis_title="Persentase (%)",
+        yaxis_title="Nilai",
         hovermode="x unified",
-        xaxis=dict(showgrid=False),
-        yaxis=dict(showgrid=False)
+        xaxis=dict(
+            showgrid=False
+        ),
+        yaxis=dict(
+            showgrid=False
+        )
     )
 
 
     st.plotly_chart(
         fig,
         use_container_width=True
+    )
+
+
+else:
+
+    st.warning(
+        "Tidak ada data yang sesuai dengan "
+        "filter yang dipilih."
     )
 
 
@@ -767,7 +799,7 @@ if (
     st.markdown("---")
 
     st.subheader(
-        "⚙️ Panel Admin — Pengeluaran Makanan"
+        f"⚙️ Panel Admin — {indikator}"
     )
 
     st.caption(
@@ -776,7 +808,7 @@ if (
 
 
     # =====================================================
-    # TABS
+    # TAB ADMIN
     # =====================================================
 
     tab_tambah, tab_edit, tab_hapus = st.tabs(
@@ -801,9 +833,8 @@ if (
                 "Import Excel/CSV"
             ],
             horizontal=True,
-            key="metode_tambah_pengeluaran_makanan"
+            key=f"metode_tambah_{nama_tabel}"
         )
-
 
         st.markdown("---")
 
@@ -815,12 +846,16 @@ if (
         if metode == "Input Manual":
 
             with st.form(
-                "form_tambah_pengeluaran",
+                f"form_tambah_{nama_tabel}",
                 clear_on_submit=True
             ):
 
                 col_a, col_b = st.columns(2)
 
+
+                # -----------------------------------------
+                # TAHUN
+                # -----------------------------------------
 
                 with col_a:
 
@@ -833,73 +868,53 @@ if (
                     )
 
 
+                # -----------------------------------------
+                # WILAYAH
+                # -----------------------------------------
+
                 with col_b:
 
                     kabkota_baru = st.selectbox(
                         "Kabupaten/Kota",
                         DAFTAR_KABKOTA,
-                        key="tambah_kabkota_pm"
+                        key=(
+                            f"tambah_kabkota_"
+                            f"{nama_tabel}"
+                        )
                     )
 
 
-                st.markdown(
-                    "**Isi nilai berdasarkan kategori:**"
+                # -----------------------------------------
+                # NILAI
+                # -----------------------------------------
+
+                nilai_baru = st.number_input(
+                    "Nilai",
+                    value=0.0,
+                    step=0.01,
+                    format="%.3f"
                 )
 
 
-                col_c, col_d, col_e = st.columns(3)
+                # -----------------------------------------
+                # SIMPAN
+                # -----------------------------------------
 
-
-                with col_c:
-
-                    miskin_baru = st.number_input(
-                        "Miskin (%)",
-                        value=0.0,
-                        step=0.01,
-                        format="%.2f"
+                tombol_simpan = (
+                    st.form_submit_button(
+                        "💾 Simpan Data Baru"
                     )
+                )
 
 
-                with col_d:
-
-                    tidak_miskin_baru = st.number_input(
-                        "Tidak Miskin (%)",
-                        value=0.0,
-                        step=0.01,
-                        format="%.2f"
-                    )
-
-
-                with col_e:
-
-                    gabungan_baru = st.number_input(
-                        "Miskin dan Tidak Miskin (%)",
-                        value=0.0,
-                        step=0.01,
-                        format="%.2f"
-                    )
-
-
-                if st.form_submit_button(
-                    "💾 Simpan Data Baru"
-                ):
+                if tombol_simpan:
 
                     data_baru = {
-
-                        "tahun":
-                            int(tahun_baru),
-
+                        "tahun": int(tahun_baru),
                         "kabupaten_kota":
                             kabkota_baru,
-
-                        "miskin":
-                            miskin_baru,
-
-                        "tidak_miskin":
-                            tidak_miskin_baru,
-
-                        "miskin_dan_tidak_miskin":
-                            gabungan_baru
+                        "nilai":
+                            nilai_baru
                     }
 
 
@@ -912,11 +927,9 @@ if (
                             .execute()
                         )
 
-
                         set_toast(
-                            "✅ Data baru berhasil ditambahkan."
+                            "Data baru berhasil ditambahkan."
                         )
-
 
                         st.rerun()
 
@@ -937,11 +950,8 @@ if (
             kolom_wajib = [
                 "tahun",
                 "kabupaten_kota",
-                "miskin",
-                "tidak_miskin",
-                "miskin_dan_tidak_miskin"
+                "nilai"
             ]
-
 
             kolom_teks = [
                 "kabupaten_kota"
@@ -963,7 +973,16 @@ if (
 
     with tab_edit:
 
-        if df.empty:
+        opsi_baris = [
+            (
+                f"{row['tahun']} - "
+                f"{row['kabupaten_kota']}"
+            )
+            for _, row in df.iterrows()
+        ]
+
+
+        if not opsi_baris:
 
             st.info(
                 "Belum ada data yang dapat diedit."
@@ -971,39 +990,37 @@ if (
 
         else:
 
-            opsi_baris = [
-
-                f"{row['tahun']} - "
-                f"{row['kabupaten_kota']}"
-
-                for _, row in df.iterrows()
-
-            ]
-
-
             pilih_baris = st.selectbox(
                 "Pilih data yang mau diedit",
                 opsi_baris,
-                key="pilih_edit_pm"
+                key=f"pilih_edit_{nama_tabel}"
             )
 
 
             if pilih_baris:
 
-                tahun_pilih, kabkota_pilih = (
-                    pilih_baris.split(
-                        " - ",
-                        1
-                    )
+                bagian = pilih_baris.split(
+                    " - ",
+                    1
                 )
+
 
                 tahun_pilih = int(
-                    tahun_pilih
+                    bagian[0]
                 )
 
+                kabkota_pilih = bagian[1]
 
-                baris_df = df[
-                    (df["tahun"] == tahun_pilih)
+
+                # -----------------------------------------
+                # CARI BARIS
+                # -----------------------------------------
+
+                baris_filter = df[
+                    (
+                        df["tahun"]
+                        == tahun_pilih
+                    )
                     &
                     (
                         df["kabupaten_kota"]
@@ -1012,13 +1029,20 @@ if (
                 ]
 
 
-                if not baris_df.empty:
+                if not baris_filter.empty:
 
-                    baris = baris_df.iloc[0]
+                    baris = (
+                        baris_filter
+                        .iloc[0]
+                    )
 
+
+                    # -------------------------------------
+                    # FORM EDIT
+                    # -------------------------------------
 
                     with st.form(
-                        "form_edit_pengeluaran"
+                        f"form_edit_{nama_tabel}"
                     ):
 
                         st.write(
@@ -1027,58 +1051,26 @@ if (
                         )
 
 
-                        col_c, col_d, col_e = (
-                            st.columns(3)
+                        nilai_edit = (
+                            st.number_input(
+                                "Nilai",
+                                value=float(
+                                    baris["nilai"]
+                                ),
+                                step=0.01,
+                                format="%.3f"
+                            )
                         )
 
 
-                        with col_c:
-
-                            miskin_edit = st.number_input(
-                                "Miskin (%)",
-                                value=float(
-                                    baris["miskin"]
-                                ),
-                                step=0.01,
-                                format="%.2f"
+                        tombol_edit = (
+                            st.form_submit_button(
+                                "💾 Simpan Perubahan"
                             )
+                        )
 
 
-                        with col_d:
-
-                            tidak_miskin_edit = (
-                                st.number_input(
-                                    "Tidak Miskin (%)",
-                                    value=float(
-                                        baris[
-                                            "tidak_miskin"
-                                        ]
-                                    ),
-                                    step=0.01,
-                                    format="%.2f"
-                                )
-                            )
-
-
-                        with col_e:
-
-                            gabungan_edit = (
-                                st.number_input(
-                                    "Miskin dan Tidak Miskin (%)",
-                                    value=float(
-                                        baris[
-                                            "miskin_dan_tidak_miskin"
-                                        ]
-                                    ),
-                                    step=0.01,
-                                    format="%.2f"
-                                )
-                            )
-
-
-                        if st.form_submit_button(
-                            "💾 Simpan Perubahan"
-                        ):
+                        if tombol_edit:
 
                             try:
 
@@ -1086,12 +1078,8 @@ if (
                                     supabase_admin
                                     .table(nama_tabel)
                                     .update({
-                                        "miskin":
-                                            miskin_edit,
-                                        "tidak_miskin":
-                                            tidak_miskin_edit,
-                                        "miskin_dan_tidak_miskin":
-                                            gabungan_edit
+                                        "nilai":
+                                            nilai_edit
                                     })
                                     .eq(
                                         "tahun",
@@ -1106,9 +1094,8 @@ if (
 
 
                                 set_toast(
-                                    "✅ Data berhasil diperbarui."
+                                    "Data berhasil diperbarui."
                                 )
-
 
                                 st.rerun()
 
@@ -1116,7 +1103,8 @@ if (
                             except Exception as e:
 
                                 st.error(
-                                    f"Gagal memperbarui data: {e}"
+                                    "Gagal memperbarui "
+                                    f"data: {e}"
                                 )
 
 
@@ -1126,7 +1114,16 @@ if (
 
     with tab_hapus:
 
-        if df.empty:
+        opsi_hapus = [
+            (
+                f"{row['tahun']} - "
+                f"{row['kabupaten_kota']}"
+            )
+            for _, row in df.iterrows()
+        ]
+
+
+        if not opsi_hapus:
 
             st.info(
                 "Belum ada data yang dapat dihapus."
@@ -1134,39 +1131,46 @@ if (
 
         else:
 
-            opsi_hapus = [
-
-                f"{row['tahun']} - "
-                f"{row['kabupaten_kota']}"
-
-                for _, row in df.iterrows()
-
-            ]
-
-
             pilih_hapus = st.selectbox(
                 "Pilih data yang mau dihapus",
                 opsi_hapus,
-                key="pilih_hapus_pm"
+                key=f"pilih_hapus_{nama_tabel}"
             )
 
 
+            # ---------------------------------------------
+            # TOMBOL HAPUS
+            # ---------------------------------------------
+
             if st.button(
                 "🗑 Hapus Data Ini",
-                key="tombol_hapus_pm"
+                key=(
+                    f"tombol_hapus_"
+                    f"{nama_tabel}"
+                )
             ):
 
                 st.session_state[
-                    "konfirmasi_hapus_pm"
+                    f"konfirmasi_hapus_{nama_tabel}"
                 ] = pilih_hapus
 
 
+            konfirmasi_key = (
+                f"konfirmasi_hapus_"
+                f"{nama_tabel}"
+            )
+
+
+            # ---------------------------------------------
+            # KONFIRMASI
+            # ---------------------------------------------
+
             if st.session_state.get(
-                "konfirmasi_hapus_pm"
+                konfirmasi_key
             ):
 
                 target = st.session_state[
-                    "konfirmasi_hapus_pm"
+                    konfirmasi_key
                 ]
 
 
@@ -1177,27 +1181,35 @@ if (
                 )
 
 
-                col_ya, col_batal = (
-                    st.columns(2)
-                )
+                col_ya, col_batal = st.columns(2)
 
 
-                # =================================================
-                # KONFIRMASI HAPUS
-                # =================================================
+                # -----------------------------------------
+                # YA, HAPUS
+                # -----------------------------------------
 
                 with col_ya:
 
                     if st.button(
                         "✅ Ya, Hapus Permanen",
-                        key="ya_hapus_pm"
+                        key=(
+                            f"ya_hapus_"
+                            f"{nama_tabel}"
+                        )
                     ):
 
-                        tahun_hapus, kabkota_hapus = (
-                            target.split(
-                                " - ",
-                                1
-                            )
+                        bagian = target.split(
+                            " - ",
+                            1
+                        )
+
+
+                        tahun_hapus = int(
+                            bagian[0]
+                        )
+
+                        kabkota_hapus = (
+                            bagian[1]
                         )
 
 
@@ -1209,7 +1221,7 @@ if (
                                 .delete()
                                 .eq(
                                     "tahun",
-                                    int(tahun_hapus)
+                                    tahun_hapus
                                 )
                                 .eq(
                                     "kabupaten_kota",
@@ -1220,14 +1232,13 @@ if (
 
 
                             del st.session_state[
-                                "konfirmasi_hapus_pm"
+                                konfirmasi_key
                             ]
 
 
                             set_toast(
-                                "✅ Data berhasil dihapus."
+                                "Data berhasil dihapus."
                             )
-
 
                             st.rerun()
 
@@ -1235,23 +1246,27 @@ if (
                         except Exception as e:
 
                             st.error(
-                                f"Gagal menghapus data: {e}"
+                                "Gagal menghapus "
+                                f"data: {e}"
                             )
 
 
-                # =================================================
+                # -----------------------------------------
                 # BATAL
-                # =================================================
+                # -----------------------------------------
 
                 with col_batal:
 
                     if st.button(
                         "❌ Batal",
-                        key="batal_hapus_pm"
+                        key=(
+                            f"batal_hapus_"
+                            f"{nama_tabel}"
+                        )
                     ):
 
                         del st.session_state[
-                            "konfirmasi_hapus_pm"
+                            konfirmasi_key
                         ]
 
                         st.rerun()

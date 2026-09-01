@@ -1,6 +1,9 @@
 import streamlit as st
 
-from utils import load_css, admin_login, show_login_dialog_if_requested
+from utils import (
+    load_css,
+    login_dialog
+)
 
 
 # ============================================================
@@ -10,17 +13,24 @@ from utils import load_css, admin_login, show_login_dialog_if_requested
 st.set_page_config(
     page_title="SISTA - Sistem Informasi Statistik Sosial",
     page_icon="logo_bps.png",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 
 # ============================================================
-# LOAD CSS DAN ADMIN
+# LOAD CSS
 # ============================================================
 
 load_css()
-admin_login()
-show_login_dialog_if_requested()
+
+
+# ============================================================
+# SESSION STATE
+# ============================================================
+
+if "is_admin" not in st.session_state:
+    st.session_state["is_admin"] = False
 
 
 # ============================================================
@@ -82,12 +92,6 @@ perumahan = st.Page(
     icon=":material/home:"
 )
 
-statistik = st.Page(
-    "pages/Statistik.py",
-    title="Statistik",
-    icon=":material/bar_chart:"
-)
-
 upload = st.Page(
     "pages/Upload.py",
     title="Upload",
@@ -96,10 +100,8 @@ upload = st.Page(
 
 
 # ============================================================
-# NAVIGASI
+# NAVIGASI STREAMLIT
 # ============================================================
-# position="hidden" WAJIB supaya menu bawaan Streamlit
-# tidak muncul lagi dan tidak double dengan menu custom.
 
 pg = st.navigation(
     [
@@ -112,7 +114,6 @@ pg = st.navigation(
         penduduk,
         pengeluaran,
         perumahan,
-        statistik,
         upload
     ],
     position="hidden"
@@ -120,182 +121,259 @@ pg = st.navigation(
 
 
 # ============================================================
-# SIDEBAR CUSTOM
+# HEADER (dibungkus 1 container biar sticky + background nyatu)
 # ============================================================
 
-with st.sidebar:
+header_container = st.container(key="sista_sticky_header")
 
-    # --------------------------------------------------------
-    # JUDUL SIDEBAR
-    # --------------------------------------------------------
+with header_container:
 
-    st.markdown(
-        """
-        <div class="sidebar-title">
-            <span class="sidebar-title-icon">📊</span>
-            <span>Statistik Sosial</span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="sidebar-line"></div>',
-        unsafe_allow_html=True
+    header_logo, header_menu, header_login = st.columns(
+        [2.0, 5.0, 0.7],
+        vertical_alignment="center"
     )
 
 
     # --------------------------------------------------------
-    # MENU
+    # LOGO BPS
     # --------------------------------------------------------
 
-    st.page_link(
-        home,
-        label="Beranda",
-        icon=":material/home:"
-    )
+    with header_logo:
 
-    st.page_link(
-        dashboard,
-        label="Dashboard",
-        icon=":material/dashboard:"
-    )
+        logo_col, text_col = st.columns(
+            [0.5, 2.2],
+            vertical_alignment="center"
+        )
 
-    st.page_link(
-        dokumen,
-        label="Dokumen",
-        icon=":material/description:"
-    )
+        with logo_col:
 
-    st.page_link(
-        kemiskinan,
-        label="Kemiskinan",
-        icon=":material/payments:"
-    )
+            st.image(
+                "logo_bps.png",
+                width=48
+            )
 
-    st.page_link(
-        ketenagakerjaan,
-        label="Ketenagakerjaan",
-        icon=":material/work:"
-    )
+        with text_col:
 
-    st.page_link(
-        pendidikan,
-        label="Pendidikan",
-        icon=":material/school:"
-    )
+            st.markdown(
+                """
+                <div class="bps-name">
+                    BADAN PUSAT STATISTIK
+                </div>
 
-    st.page_link(
-        penduduk,
-        label="Kependudukan",
-        icon=":material/groups:"
-    )
-
-    st.page_link(
-        pengeluaran,
-        label="Pengeluaran Makanan",
-        icon=":material/restaurant:"
-    )
-
-    st.page_link(
-        perumahan,
-        label="Perumahan",
-        icon=":material/home:"
-    )
-
-    st.page_link(
-        statistik,
-        label="Statistik",
-        icon=":material/bar_chart:"
-    )
-
-    st.page_link(
-        upload,
-        label="Upload",
-        icon=":material/upload:"
-    )
+                <div class="bps-province">
+                    PROVINSI LAMPUNG
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
 
     # --------------------------------------------------------
-    # PEMBATAS
+    # MENU HEADER
     # --------------------------------------------------------
 
-    st.markdown(
-        '<div class="sidebar-line"></div>',
-        unsafe_allow_html=True
-    )
+    with header_menu:
+
+        menu1, menu2, menu3, menu4, menu5, menu6 = st.columns(
+            [0.8, 0.8, 1.15, 1.15, 0.65, 0.65],
+            vertical_alignment="center"
+        )
+
+
+        # ----------------------------------------------------
+        # BERANDA
+        # ----------------------------------------------------
+
+        with menu1:
+
+            st.page_link(
+                home,
+                label="Beranda",
+                icon=":material/home:"
+            )
+
+
+        # ----------------------------------------------------
+        # DASHBOARD
+        # ----------------------------------------------------
+
+        with menu2:
+
+            st.page_link(
+                dashboard,
+                label="Dashboard",
+                icon=":material/dashboard:"
+            )
+
+
+        # ----------------------------------------------------
+        # STATISTIK SOSIAL
+        # ----------------------------------------------------
+
+        with menu3:
+
+        # Tandai jika sedang berada di salah satu halaman Statistik Sosial
+            statistik_sosial_aktif = pg in [
+                kemiskinan,
+                ketenagakerjaan,
+                pendidikan,
+                penduduk,
+                pengeluaran,
+                perumahan
+            ]
+
+            with st.container(key="statistik_sosial_menu"):
+
+            # Penanda khusus untuk CSS saat menu sedang aktif
+                if statistik_sosial_aktif:
+                    st.markdown(
+                    '<div class="statistik-sosial-active"></div>',
+                    unsafe_allow_html=True
+                )
+
+                with st.popover(
+                    "Statistik Sosial",
+                    use_container_width=True
+                ):
+
+
+                    st.page_link(
+                    kemiskinan,
+                        label="Kemiskinan",
+                        icon=":material/payments:"
+                    )
+
+                    st.page_link(
+                        ketenagakerjaan,
+                        label="Ketenagakerjaan",
+                        icon=":material/work:"
+                    )
+
+                    st.page_link(
+                        pendidikan,
+                        label="Pendidikan",
+                        icon=":material/school:"
+                    )
+
+                    st.page_link(
+                        penduduk,
+                        label="Kependudukan",
+                        icon=":material/groups:"
+                    )
+
+                    st.page_link(
+                        pengeluaran,
+                        label="Pengeluaran Makanan",
+                        icon=":material/restaurant:"
+                    )
+
+                    st.page_link(
+                        perumahan,
+                        label="Perumahan",
+                        icon=":material/home:"
+                    )
+        # ----------------------------------------------------
+        # DOKUMEN
+        # ----------------------------------------------------
+
+        with menu4:
+
+            st.page_link(
+                dokumen,
+                label="Dokumen",
+                icon=":material/description:"
+            )
+
+
+        # ----------------------------------------------------
+        # PENCARIAN
+        # ----------------------------------------------------
+
+        with menu5:
+
+            with st.popover(
+                "🔎",
+                use_container_width=True
+            ):
+
+                st.text_input(
+                    "Cari dokumen",
+                    placeholder="Masukkan nama dokumen",
+                    key="header_search"
+                )
+
+
+        # ----------------------------------------------------
+        # LOKASI
+        # ----------------------------------------------------
+
+        with menu6:
+
+            with st.popover(
+                "📍",
+                use_container_width=True
+            ):
+                st.selectbox(
+                    "Pilih wilayah",
+                    [
+                        "Semua",
+                        "Bandar Lampung",
+                        "Metro",
+                        "Lampung Barat",
+                        "Lampung Selatan",
+                        "Lampung Tengah",
+                        "Lampung Timur",
+                        "Lampung Utara",
+                        "Mesuji",
+                        "Pesawaran",
+                        "Pesisir Barat",
+                        "Pringsewu",
+                        "Tanggamus",
+                        "Tulang Bawang",
+                        "Tulang Bawang Barat",
+                        "Way Kanan"
+                    ],
+                    key="header_wilayah"
+                )
 
 
     # --------------------------------------------------------
-    # PENCARIAN
+    # LOGIN ADMIN
     # --------------------------------------------------------
 
-    st.markdown(
-        '<div class="sidebar-section-title">🔎 Pencarian</div>',
-        unsafe_allow_html=True
-    )
+    with header_login:
 
-    st.markdown(
-        '<div class="sidebar-label">Cari dokumen...</div>',
-        unsafe_allow_html=True
-    )
+        if st.session_state["is_admin"]:
 
-    cari = st.text_input(
-        "Cari dokumen",
-        placeholder="Masukkan nama dokumen",
-        label_visibility="collapsed"
-    )
+            if st.button(
+                "Logout",
+                key="header_logout",
+                use_container_width=True
+            ):
 
+                st.session_state["is_admin"] = False
+                st.rerun()
 
-    # --------------------------------------------------------
-    # FILTER KABUPATEN/KOTA
-    # --------------------------------------------------------
+        else:
 
-    st.markdown(
-        '<div class="sidebar-section-title">📍 Filter Kabupaten/Kota</div>',
-        unsafe_allow_html=True
-    )
+            if st.button(
+                "Login Admin",
+                key="header_login_button",
+                type="primary",
+                use_container_width=True
+            ):
 
-    kabupaten = [
-        "Semua",
-        "Bandar Lampung",
-        "Metro",
-        "Lampung Barat",
-        "Lampung Selatan",
-        "Lampung Tengah",
-        "Lampung Timur",
-        "Lampung Utara",
-        "Mesuji",
-        "Pesawaran",
-        "Pesisir Barat",
-        "Pringsewu",
-        "Tanggamus",
-        "Tulang Bawang",
-        "Tulang Bawang Barat",
-        "Way Kanan"
-    ]
-
-    filter_kabupaten = st.selectbox(
-        "Pilih Kabupaten/Kota",
-        kabupaten,
-        label_visibility="collapsed"
-    )
+                login_dialog()
 
 
-    # --------------------------------------------------------
-    # FILTER JENIS FILE
-    # --------------------------------------------------------
+# ============================================================
+# PEMBATAS HEADER
+# ============================================================
 
-    st.markdown(
-        '<div class="sidebar-section-title">📂 Filter Jenis File</div>',
-        unsafe_allow_html=True
-    )
-
-    filter_jenis = st.selectbox(
-        "Pilih jenis file",
-        ["Semua", "PDF", "Excel", "Word", "PPT"],
-        label_visibility="collapsed"
-    )
+st.markdown(
+    '<div class="header-line"></div>',
+    unsafe_allow_html=True
+)
 
 
 # ============================================================

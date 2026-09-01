@@ -14,15 +14,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# ==========================
-# Koneksi Supabase
-# ==========================
-
-url = st.secrets["SUPABASE_URL"]
-key = st.secrets["SUPABASE_KEY"]
-
-supabase: Client = create_client(url, key)
-
 st.title("📤 Upload Dokumen")
 st.write("Silakan unggah dokumen Bidang Statistik Sosial.")
 
