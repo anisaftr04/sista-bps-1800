@@ -1,244 +1,588 @@
-.stApp{
-    background:#F4F8FC;
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+.stApp {
+    background: #F4F8FC;
 }
 
-/* Header */
-.header{
-    background:linear-gradient(90deg,#005BAC,#0077D9,#F7941D);
-    padding:25px;
-    border-radius:18px;
-    color:white;
-    margin-bottom:20px;
+
+/* =========================================================
+   AREA UTAMA
+========================================================= */
+
+section.main > div {
+    padding-left: 30px !important;
+    padding-right: 30px !important;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"]{
-    background:#005BAC;
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+section[data-testid="stSidebar"] {
+    background: #005BAC;
 }
 
-section[data-testid="stSidebar"] *{
-    color:white;
-}
-/* KPI Card */
-.card{
-    background:white;
-    border-radius:18px;
-    padding:25px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:.3s;
-    text-align:center;
-    border-top:6px solid #005BAC;
+section[data-testid="stSidebar"] > div {
+    background: #005BAC;
 }
 
-.card:hover{
-    transform:translateY(-8px);
+section[data-testid="stSidebar"] * {
+    color: white;
 }
 
-.card h1{
+
+/* =========================================================
+   JUDUL SIDEBAR
+========================================================= */
+
+.sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    color: white;
+
+    font-size: 21px;
+    font-weight: 700;
+
+    padding: 8px 8px 15px 8px;
+
+    margin: 0;
+}
+
+.sidebar-title-icon {
+    font-size: 23px;
+}
+
+
+/* =========================================================
+   GARIS SIDEBAR
+========================================================= */
+
+.sidebar-line {
+    height: 1px;
+
+    background: rgba(255,255,255,0.20);
+
+    margin: 8px 0 12px 0;
+}
+
+
+/* =========================================================
+   MENU SIDEBAR
+========================================================= */
+
+[data-testid="stSidebar"] [data-testid="stPageLink"] {
+    margin-bottom: 3px;
+}
+
+[data-testid="stSidebarNavLink"] {
     color: white !important;
-    font-size:52px;
-    font-weight:bold;
+
+    border-radius: 9px;
+
+    transition: 0.2s;
+
+    padding: 8px 10px !important;
 }
 
-.card h2{
-    color:white !important;
-    font-size:38px;
+[data-testid="stSidebarNavLink"] span {
+    color: white !important;
 }
 
-.card p{
-    color:white !important;
-    font-size:20px;
-    font-weight:600;
+[data-testid="stSidebarNavLink"]:hover {
+    background-color: #0077D9 !important;
 }
 
-.biru{
-    border-top:6px solid #005BAC;
+[data-testid="stSidebarNavLink"][aria-current="page"] {
+    background-color: #1E88E5 !important;
+    color: white !important;
 }
 
-.merah{
-    border-top:6px solid #E74C3C;
+
+/* =========================================================
+   JUDUL SECTION SIDEBAR
+========================================================= */
+
+.sidebar-section-title {
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    margin-top: 16px;
+    margin-bottom: 7px;
 }
 
-.hijau{
-    border-top:6px solid #2ECC71;
+
+/* =========================================================
+   LABEL SIDEBAR
+========================================================= */
+
+.sidebar-label {
+    color: white;
+
+    font-size: 17px;
+
+    margin-bottom: 5px;
 }
 
-.orange{
-    border-top:6px solid #F7941D;
-}
 
-/* ========================= */
-/* Card Dokumen */
-/* ========================= */
+/* =========================================================
+   INPUT SIDEBAR
+========================================================= */
 
-.dokumen-card{
-    background:white;
-    border-radius:15px;
-    padding:18px;
-    margin-bottom:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,.08);
-    border-left:6px solid #005BAC;
-    transition:0.3s;
-}
-
-.dokumen-card:hover{
-    transform:translateY(-5px);
-    border-left:6px solid #F7941D;
-}
-
-.dokumen-card h4{
-    color:#005BAC;
-    margin-bottom:8px;
-}
-
-.dokumen-card p{
-    margin:3px 0;
-    color:#555;
-
-    }
-    
-    .dokumen-card:hover{
-    
-    transform:translateY(-3px);
-    
-    border-left:8px solid #F7941D;
-    
-    }
-    /* ========================= */
-/* Input Pencarian */
-/* ========================= */
-
-.stTextInput input {
+section[data-testid="stSidebar"] .stTextInput input {
     background-color: white !important;
-    color: #000000 !important;
-    border: 2px solid #d9d9d9 !important;
-    border-radius: 8px;
+
+    color: #222 !important;
+
+    border: 2px solid #D9D9D9 !important;
+
+    border-radius: 8px !important;
+
+    font-size: 16px !important;
+
+    padding: 9px 12px !important;
 }
 
-.stTextInput input::placeholder {
-    color: #888888 !important;
-}
-/* ========================= */
-/* WARNA KPI */
-/* ========================= */
-
-.biru{
-    background:linear-gradient(135deg,#005BAC,#1E88E5);
+section[data-testid="stSidebar"] .stTextInput input::placeholder {
+    color: #888 !important;
 }
 
-.merah{
-    background:linear-gradient(135deg,#E53935,#EF5350);
+
+/* =========================================================
+   SELECTBOX SIDEBAR
+========================================================= */
+
+section[data-testid="stSidebar"] .stSelectbox div {
+    font-size: 16px !important;
 }
 
-.hijau{
-    background:linear-gradient(135deg,#2E7D32,#43A047);
+section[data-testid="stSidebar"] .stSelectbox label {
+    color: white !important;
 }
 
-.orange{
-    background:linear-gradient(135deg,#F57C00,#FB8C00);
+
+/* =========================================================
+   IDENTITAS BPS
+========================================================= */
+
+.bps-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-bottom: 22px;
+
+    padding-left: 5px;
 }
 
-/* ===========================
-   PERBESAR UKURAN FONT
-=========================== */
+.bps-logo {
+    width: 85px;
 
-section[data-testid="stSidebar"] *{
-    font-size:20px !important;
-}
+    height: auto;
 
-.dokumen-card h4{
-    font-size:25px;
-    font-weight:bold;
+    display: block;
 }
 
-.dokumen-card p{
-    font-size:19px;
+.bps-text {
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
 }
 
-.header h1{
-    font-size:55px;
+.bps-title {
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #005BAC;
+
+    line-height: 1.2;
 }
 
-.header h3{
-    font-size:35px;
+.bps-province {
+    font-size: 23px;
+
+    font-weight: 500;
+
+    color: #4F9DD9;
+
+    margin-top: 3px;
 }
 
-.header p{
-    font-size:25px;
+
+/* =========================================================
+   HEADER SISTA
+========================================================= */
+
+.header {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    background: linear-gradient(
+        90deg,
+        #005BAC,
+        #0077D9,
+        #F7941D
+    );
+
+    padding: 35px 28px;
+
+    border-radius: 18px;
+
+    color: white;
+
+    margin-bottom: 20px;
 }
 
-.card h1{
-    font-size:60px;
-    font-weight:bold;
+.header h1 {
+    color: white;
+
+    font-size: 55px;
+
+    margin: 0 0 10px 0;
 }
 
-.card h2{
-    font-size:48px;
+.header h3 {
+    color: white;
+
+    font-size: 35px;
+
+    margin: 0 0 12px 0;
 }
 
-.card p{
-    font-size:33px;
+.header p {
+    color: white;
+
+    font-size: 25px;
+
+    margin: 5px 0;
 }
 
-.stButton button{
-    font-size:23px !important;
-    font-weight:600;
+
+/* =========================================================
+   KPI CARD
+========================================================= */
+
+.card {
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+
+    text-align: center;
+
+    transition: 0.3s;
 }
 
-.streamlit-expaderHeader{
-    font-size:25px !important;
-    font-weight:bold;
+.card:hover {
+    transform: translateY(-6px);
 }
 
-/* Judul Expander */
-details summary p{
-    font-size:20px !important;
-    font-weight:600 !important;
+.card h1 {
+    color: white !important;
+
+    font-size: 60px;
+
+    font-weight: bold;
+
+    margin: 5px 0;
 }
 
-details summary{
-    font-size:20px !important;
-}
-/* Judul Expander */
-details summary p{
-    font-size:20px !important;
-    font-weight:600 !important;
+.card h2 {
+    color: white !important;
+
+    font-size: 48px;
+
+    margin: 0;
 }
 
-details summary{
-    font-size:20px !important;
-}
-/* Sidebar */
-section[data-testid="stSidebar"] *{
-    font-size:25px !important;
-}
-/* Text Input */
-.stTextInput input{
-    font-size:18px !important;
-}
-/* Selectbox */
-.stSelectbox div{
-    font-size:18px !important;
-}
-h2{
-    font-size:40px !important;
-}
-.css-10trblm,
-.stCaption{
-    font-size:17px !important;
+.card p {
+    color: white !important;
+
+    font-size: 25px;
+
+    font-weight: 600;
+
+    margin: 5px 0;
 }
 
-/* Warna judul expander */
-details summary,
+
+/* =========================================================
+   WARNA KPI
+========================================================= */
+
+.biru {
+    background: linear-gradient(
+        135deg,
+        #005BAC,
+        #1E88E5
+    );
+}
+
+.merah {
+    background: linear-gradient(
+        135deg,
+        #E53935,
+        #EF5350
+    );
+}
+
+.hijau {
+    background: linear-gradient(
+        135deg,
+        #2E7D32,
+        #43A047
+    );
+}
+
+.orange {
+    background: linear-gradient(
+        135deg,
+        #F57C00,
+        #FB8C00
+    );
+}
+
+
+/* =========================================================
+   CARD DOKUMEN
+========================================================= */
+
+.dokumen-card {
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+    border-left: 6px solid #005BAC;
+
+    transition: 0.3s;
+}
+
+.dokumen-card:hover {
+    transform: translateY(-3px);
+
+    border-left: 8px solid #F7941D;
+}
+
+.dokumen-card h4 {
+    color: #005BAC;
+
+    font-size: 23px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.dokumen-card p {
+    margin: 3px 0;
+
+    color: #555;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.stButton button {
+    font-size: 18px !important;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EXPANDER
+========================================================= */
+
 details summary p {
+    font-size: 20px !important;
+
+    font-weight: 600 !important;
+
     color: #000 !important;
 }
 
-/* Isi expander */
+details summary {
+    font-size: 20px !important;
+
+    color: #000 !important;
+}
+
 div[data-testid="stExpander"] {
     color: #000 !important;
 }
 
 div[data-testid="stExpander"] * {
     color: #000 !important;
+}
+
+
+/* =========================================================
+   LOGIN DIALOG
+========================================================= */
+
+div[data-testid="stDialog"] h2 {
+    color: #005BAC !important;
+}
+
+div[data-testid="stDialog"] input {
+    background-color: white !important;
+
+    color: #222 !important;
+
+    border: 1px solid #CCCCCC !important;
+
+    border-radius: 8px !important;
+}
+
+
+/* =========================================================
+   ADMIN PANEL
+========================================================= */
+
+.admin-panel {
+    background-color: white;
+
+    padding: 20px;
+
+    border-radius: 15px;
+
+    border-left: 6px solid #005BAC;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   TOMBOL LOGIN ADMIN
+========================================================= */
+
+.st-key-open_login_admin {
+    position: fixed !important;
+
+    top: 10px;
+
+    right: 110px;
+
+    z-index: 999999;
+}
+
+
+/* =========================================================
+   LABEL ADMIN
+========================================================= */
+
+.st-key-admin_label_btn {
+    position: fixed !important;
+
+    top: 10px;
+
+    right: 180px;
+
+    z-index: 999999;
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+.st-key-logout_admin {
+    position: fixed !important;
+
+    top: 10px;
+
+    right: 105px;
+
+    z-index: 999999;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+div[data-testid="stToast"] {
+    position: fixed !important;
+
+    top: 50% !important;
+
+    left: 50% !important;
+
+    right: auto !important;
+
+    bottom: auto !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    z-index: 999999 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .bps-logo {
+        width: 65px;
+    }
+
+    .bps-title {
+        font-size: 23px;
+    }
+
+    .bps-province {
+        font-size: 18px;
+    }
+
+    .header h1 {
+        font-size: 42px;
+    }
+
+    .header h3 {
+        font-size: 27px;
+    }
+
+    .header p {
+        font-size: 19px;
+    }
+
+    .card h1 {
+        font-size: 45px;
+    }
+
+    .card h2 {
+        font-size: 35px;
+    }
+
+    .card p {
+        font-size: 19px;
+    }
 }

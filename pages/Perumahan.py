@@ -19,7 +19,7 @@ DAFTAR_KABKOTA = [
 
 col_judul, col_edit = st.columns([8, 1])
 with col_judul:
-    st.title("🍚 Pengeluaran Perkapita untuk Makanan")
+    st.title("🏠 Fasilitas Perumahan")
 with col_edit:
     st.write("")
     admin_edit_button()
@@ -29,11 +29,11 @@ with col_edit:
 # KONEKSI SUPABASE
 # =============================
 
-url = st.secrets["SUPABASE_URL"]
-key = st.secrets["SUPABASE_KEY"]
-service_key = st.secrets["SUPABASE_SERVICE_ROLE_KEY"]
+url = st.secrets["SUPABASE_URL"] 
+key = st.secrets["SUPABASE_KEY"] 
+service_key = st.secrets["SUPABASE_SERVICE_ROLE_KEY"] 
 
-supabase: Client = create_client(url, key)
+supabase: Client = create_client(url, key) 
 supabase_admin: Client = create_client(url, service_key)
 
 
@@ -41,11 +41,11 @@ supabase_admin: Client = create_client(url, service_key)
 # AMBIL DATA
 # =============================
 
-response = supabase.table("pengeluaran_makanan").select("*").execute()
+response = supabase.table("fasilitas_perumahan").select("*").execute()
 data = response.data
 
 if not data:
-    st.warning("Data Pengeluaran Perkapita untuk Makanan belum tersedia.")
+    st.warning("Data Fasilitas Perumahan belum tersedia.")
     st.stop()
 
 df = pd.DataFrame(data)
@@ -67,7 +67,7 @@ df_wilayah = df_wilayah.sort_values("tahun")
 # JUDUL
 # =============================
 
-st.subheader(f"🍚 Pengeluaran Perkapita untuk Makanan - {wilayah}")
+st.subheader(f"🏠 Fasilitas Perumahan - {wilayah}")
 st.write(f"Data tahun {df_wilayah['tahun'].min()}–{df_wilayah['tahun'].max()}.")
 
 
@@ -76,14 +76,13 @@ st.write(f"Data tahun {df_wilayah['tahun'].min()}–{df_wilayah['tahun'].max()}.
 # =============================
 
 df_tabel = df_wilayah[
-    ["tahun", "miskin", "tidak_miskin", "miskin_dan_tidak_miskin"]
+    ["tahun", "air_layak", "jamban_sendiri_bersama"]
 ].copy()
 
 df_tabel = df_tabel.rename(columns={
     "tahun": "Tahun",
-    "miskin": "Miskin",
-    "tidak_miskin": "Tidak Miskin",
-    "miskin_dan_tidak_miskin": "Miskin dan Tidak Miskin"
+    "air_layak": "Air Layak",
+    "jamban_sendiri_bersama": "Jamban Sendiri/Bersama"
 })
 
 st.dataframe(
@@ -103,15 +102,15 @@ with pd.ExcelWriter(output, engine="openpyxl") as writer:
     df_tabel.to_excel(
         writer,
         index=False,
-        sheet_name="Pengeluaran Makanan"
+        sheet_name="Fasilitas Perumahan"
     )
 
 output.seek(0)
 
 st.download_button(
-    label="📥 Download Excel Pengeluaran Makanan",
+    label="📥 Download Excel Fasilitas Perumahan",
     data=output,
-    file_name=f"Pengeluaran_Makanan_{wilayah}.xlsx",
+    file_name=f"Fasilitas_Perumahan_{wilayah}.xlsx",
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
 
@@ -121,13 +120,12 @@ st.download_button(
 # =============================
 
 df_grafik = df_wilayah[
-    ["tahun", "miskin", "tidak_miskin", "miskin_dan_tidak_miskin"]
+    ["tahun", "air_layak", "jamban_sendiri_bersama"]
 ].copy()
 
 df_grafik = df_grafik.rename(columns={
-    "miskin": "Miskin",
-    "tidak_miskin": "Tidak Miskin",
-    "miskin_dan_tidak_miskin": "Miskin dan Tidak Miskin"
+    "air_layak": "Air Layak",
+    "jamban_sendiri_bersama": "Jamban Sendiri/Bersama"
 })
 
 df_long = df_grafik.melt(
@@ -142,7 +140,7 @@ fig = px.line(
     y="Persentase",
     color="Kategori",
     markers=True,
-    title=f"Pengeluaran Perkapita untuk Makanan - {wilayah}"
+    title=f"Fasilitas Perumahan - {wilayah}"
 )
 
 fig.update_layout(
@@ -169,11 +167,13 @@ st.caption("Sumber data: Badan Pusat Statistik (BPS).")
 if is_admin and st.session_state.get("show_admin_panel", False):
 
     st.markdown("---")
-    st.subheader("⚙️ Panel Admin — Pengeluaran Makanan")
+    st.subheader("⚙️ Panel Admin — Fasilitas Perumahan")
 
-    tab_tambah, tab_edit, tab_hapus = st.tabs(
-        ["➕ Tambah Data", "✏️ Edit Data", "🗑 Hapus Data"]
-    )
+    tab_tambah, tab_edit, tab_hapus = st.tabs([
+        "➕ Tambah Data",
+        "✏️ Edit Data",
+        "🗑 Hapus Data"
+    ])
 
 
     # =====================================================
@@ -186,10 +186,8 @@ if is_admin and st.session_state.get("show_admin_panel", False):
             "Metode Input",
             ["Input Manual", "Import Excel/CSV"],
             horizontal=True,
-            key="metode_tambah_pengeluaran_makanan"
+            key="metode_tambah_perumahan"
         )
-
-        st.markdown("---")
 
 
         # =================================================
@@ -199,7 +197,7 @@ if is_admin and st.session_state.get("show_admin_panel", False):
         if metode == "Input Manual":
 
             with st.form(
-                "form_tambah_pengeluaran",
+                "form_tambah_perumahan",
                 clear_on_submit=True
             ):
 
@@ -217,26 +215,20 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                     kabkota_baru = st.selectbox(
                         "Kabupaten/Kota",
                         DAFTAR_KABKOTA,
-                        key="tambah_kabkota_pm"
+                        key="tambah_kabkota_rmh"
                     )
 
-                col_c, col_d, col_e = st.columns(3)
+                col_c, col_d = st.columns(2)
 
                 with col_c:
-                    miskin_baru = st.number_input(
-                        "Miskin (%)",
+                    air_baru = st.number_input(
+                        "Air Layak (%)",
                         value=0.0
                     )
 
                 with col_d:
-                    tidak_miskin_baru = st.number_input(
-                        "Tidak Miskin (%)",
-                        value=0.0
-                    )
-
-                with col_e:
-                    gabungan_baru = st.number_input(
-                        "Miskin dan Tidak Miskin (%)",
+                    jamban_baru = st.number_input(
+                        "Jamban Sendiri/Bersama (%)",
                         value=0.0
                     )
 
@@ -245,14 +237,14 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                     data_baru = {
                         "tahun": int(tahun_baru),
                         "kabupaten_kota": kabkota_baru,
-                        "miskin": miskin_baru,
-                        "tidak_miskin": tidak_miskin_baru,
-                        "miskin_dan_tidak_miskin": gabungan_baru
+                        "air_layak": air_baru,
+                        "jamban_sendiri_bersama": jamban_baru
                     }
 
                     try:
+
                         supabase_admin.table(
-                            "pengeluaran_makanan"
+                            "fasilitas_perumahan"
                         ).insert(data_baru).execute()
 
                         set_toast(
@@ -276,9 +268,8 @@ if is_admin and st.session_state.get("show_admin_panel", False):
             kolom_wajib = [
                 "tahun",
                 "kabupaten_kota",
-                "miskin",
-                "tidak_miskin",
-                "miskin_dan_tidak_miskin"
+                "air_layak",
+                "jamban_sendiri_bersama"
             ]
 
             kolom_teks = [
@@ -287,9 +278,9 @@ if is_admin and st.session_state.get("show_admin_panel", False):
 
             admin_import_data(
                 supabase_admin=supabase_admin,
-                table_name="pengeluaran_makanan",
+                table_name="fasilitas_perumahan",
                 kolom_wajib=kolom_wajib,
-                key_prefix="pengeluaran_makanan",
+                key_prefix="fasilitas_perumahan",
                 kolom_teks=kolom_teks
             )
 
@@ -308,7 +299,7 @@ if is_admin and st.session_state.get("show_admin_panel", False):
         pilih_baris = st.selectbox(
             "Pilih data yang mau diedit",
             opsi_baris,
-            key="pilih_edit_pm"
+            key="pilih_edit_rmh"
         )
 
         if pilih_baris:
@@ -325,31 +316,25 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                 (df["kabupaten_kota"] == kabkota_pilih)
             ].iloc[0]
 
-            with st.form("form_edit_pengeluaran"):
+            with st.form("form_edit_perumahan"):
 
                 st.write(
                     f"Mengedit data: **{pilih_baris}**"
                 )
 
-                col_c, col_d, col_e = st.columns(3)
+                col_c, col_d = st.columns(2)
 
                 with col_c:
-                    miskin_edit = st.number_input(
-                        "Miskin (%)",
-                        value=float(baris["miskin"])
+                    air_edit = st.number_input(
+                        "Air Layak (%)",
+                        value=float(baris["air_layak"])
                     )
 
                 with col_d:
-                    tidak_miskin_edit = st.number_input(
-                        "Tidak Miskin (%)",
-                        value=float(baris["tidak_miskin"])
-                    )
-
-                with col_e:
-                    gabungan_edit = st.number_input(
-                        "Miskin dan Tidak Miskin (%)",
+                    jamban_edit = st.number_input(
+                        "Jamban Sendiri/Bersama (%)",
                         value=float(
-                            baris["miskin_dan_tidak_miskin"]
+                            baris["jamban_sendiri_bersama"]
                         )
                     )
 
@@ -360,11 +345,10 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                     try:
 
                         supabase_admin.table(
-                            "pengeluaran_makanan"
+                            "fasilitas_perumahan"
                         ).update({
-                            "miskin": miskin_edit,
-                            "tidak_miskin": tidak_miskin_edit,
-                            "miskin_dan_tidak_miskin": gabungan_edit
+                            "air_layak": air_edit,
+                            "jamban_sendiri_bersama": jamban_edit
                         }).eq(
                             "tahun",
                             tahun_pilih
@@ -399,24 +383,24 @@ if is_admin and st.session_state.get("show_admin_panel", False):
         pilih_hapus = st.selectbox(
             "Pilih data yang mau dihapus",
             opsi_hapus,
-            key="pilih_hapus_pm"
+            key="pilih_hapus_rmh"
         )
 
         if st.button(
             "🗑 Hapus Data Ini",
-            key="tombol_hapus_pm"
+            key="tombol_hapus_rmh"
         ):
 
             st.session_state[
-                "konfirmasi_hapus_pm"
+                "konfirmasi_hapus_rmh"
             ] = pilih_hapus
 
         if st.session_state.get(
-            "konfirmasi_hapus_pm"
+            "konfirmasi_hapus_rmh"
         ):
 
             target = st.session_state[
-                "konfirmasi_hapus_pm"
+                "konfirmasi_hapus_rmh"
             ]
 
             st.warning(
@@ -430,7 +414,7 @@ if is_admin and st.session_state.get("show_admin_panel", False):
 
                 if st.button(
                     "✅ Ya, Hapus Permanen",
-                    key="ya_hapus_pm"
+                    key="ya_hapus_rmh"
                 ):
 
                     tahun_hapus, kabkota_hapus = target.split(
@@ -441,7 +425,7 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                     try:
 
                         supabase_admin.table(
-                            "pengeluaran_makanan"
+                            "fasilitas_perumahan"
                         ).delete().eq(
                             "tahun",
                             int(tahun_hapus)
@@ -451,7 +435,7 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                         ).execute()
 
                         del st.session_state[
-                            "konfirmasi_hapus_pm"
+                            "konfirmasi_hapus_rmh"
                         ]
 
                         set_toast(
@@ -469,11 +453,11 @@ if is_admin and st.session_state.get("show_admin_panel", False):
 
                 if st.button(
                     "❌ Batal",
-                    key="batal_hapus_pm"
+                    key="batal_hapus_rmh"
                 ):
 
                     del st.session_state[
-                        "konfirmasi_hapus_pm"
+                        "konfirmasi_hapus_rmh"
                     ]
 
                     st.rerun()
