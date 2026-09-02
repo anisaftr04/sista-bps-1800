@@ -24,17 +24,6 @@ st.set_page_config(
 
 load_css()
 
-# Trik untuk memaksa browser merefresh koordinat klik navbar saat pertama kali dibuka
-st.markdown(
-    """
-    <script>
-        window.addEventListener('load', function() {
-            window.dispatchEvent(new Event('resize'));
-        });
-    </script>
-    """,
-    unsafe_allow_html=True
-)
 
 # ============================================================
 # SESSION STATE
@@ -127,7 +116,7 @@ pg = st.navigation(
         perumahan,
         upload
     ],
-    position="topbar"
+    position="hidden"
 )
 
 
@@ -180,44 +169,15 @@ with header_container:
 
 
     # --------------------------------------------------------
-    # MENU HEADER (Menggunakan st.button & st.switch_page)
+    # MENU HEADER
     # --------------------------------------------------------
+
     with header_menu:
+
         menu1, menu2, menu3, menu4, menu5, menu6 = st.columns(
             [0.8, 0.8, 1.15, 1.15, 0.65, 0.65],
             vertical_alignment="center"
         )
-
-        # BERANDA
-        with menu1:
-            if st.button("🏠 Beranda", key="nav_home", use_container_width=True):
-                st.switch_page("pages/Home.py")
-
-        # DASHBOARD
-        with menu2:
-            if st.button("📊 Dashboard", key="nav_dash", use_container_width=True):
-                st.switch_page("pages/Dashboard.py")
-
-        # STATISTIK SOSIAL
-        with menu3:
-            with st.popover("Statistik Sosial ▾", use_container_width=True):
-                if st.button("💳 Kemiskinan", key="nav_kemiskinan", use_container_width=True):
-                    st.switch_page("pages/Kemiskinan.py")
-                if st.button("💼 Ketenagakerjaan", key="nav_kerja", use_container_width=True):
-                    st.switch_page("pages/Ketenagakerjaan.py")
-                if st.button("🎓 Pendidikan", key="nav_pendidikan", use_container_width=True):
-                    st.switch_page("pages/Pendidikan.py")
-                if st.button("👥 Kependudukan", key="nav_penduduk", use_container_width=True):
-                    st.switch_page("pages/Penduduk.py")
-                if st.button("🍽️ Pengeluaran Makanan", key="nav_pengeluaran", use_container_width=True):
-                    st.switch_page("pages/Pengeluaran_Makanan.py")
-                if st.button("🏠 Perumahan", key="nav_perumahan", use_container_width=True):
-                    st.switch_page("pages/Perumahan.py")
-
-        # DOKUMEN
-        with menu4:
-            if st.button("📄 Dokumen", key="nav_dokumen", use_container_width=True):
-                st.switch_page("pages/Dokumen.py")
 
 
         # ----------------------------------------------------
