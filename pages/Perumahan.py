@@ -4,6 +4,8 @@ import plotly.express as px
 from supabase import create_client, Client
 from io import BytesIO
 
+from openpyxl.utils import get_column_letter
+
 from utils import (
     load_css,
     admin_edit_button,
@@ -1154,14 +1156,12 @@ if not df_filtered.empty:
         ].width = 25
 
 
-        for col in worksheet.iter_cols(
-            min_col=2,
-            max_col=worksheet.max_column
+        for i, col in enumerate(
+            worksheet.iter_cols(min_col=2, max_col=worksheet.max_column),
+            start=2
         ):
-
-            worksheet.column_dimensions[
-                col[0].column_letter
-            ].width = 18
+            column_letter = get_column_letter(i)
+            worksheet.column_dimensions[column_letter].width = 18
 
 
         # -------------------------------------------------
