@@ -19,22 +19,23 @@ header[data-testid="stHeader"] > div {
     display: none !important;
 }
 
+
 /* ============================================================
-   AREA KONTEN UTAMA (Sesuaikan padding top agar tidak tertutup header)
+   AREA KONTEN UTAMA
    ============================================================ */
 .block-container {
     max-width: 1280px !important;
-    padding-top: 100px !important; 
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    padding-top: 90px !important; /* Memberikan ruang otomatis untuk navbar */
+    padding-left: 15px !important;
+    padding-right: 15px !important;
     padding-bottom: 60px !important;
-    margin-top: 0px !important;  
-    position: relative;
-    z-index: 1 !important;    
+    margin-top: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
 }
 
 /* ============================================================
-   HEADER STICKY BPS (Beri pointer-events)
+   HEADER STICKY BPS (FIX COORDINATE HYDRATION)
    ============================================================ */
 .st-key-sista_sticky_header {
     position: fixed !important;
@@ -42,16 +43,22 @@ header[data-testid="stHeader"] > div {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    max-width: 100vw !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     box-sizing: border-box !important;
-    z-index: 99999 !important;
+    z-index: 999999 !important;
     background-color: #0067b9 !important;
-    padding: 10px 40px !important;
-    pointer-events: auto !important; /* Memastikan semua elemen di dalamnya menerima klik secara mutlak */
+    padding: 10px 30px !important;
+    
+    /* Mencegah browser salah menghitung event listener klik saat initial load */
+    isolation: isolate !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    pointer-events: auto !important;
 }
-.st-key-sista_sticky_header [data-testid="stHorizontalBlock"] {
-    align-items: center !important;
+
+/* Memastikan tombol di dalam header selalu bisa menangkap klik */
+.st-key-sista_sticky_header * {
+    pointer-events: auto !important;
 }
 
 /* Identitas Brand BPS */

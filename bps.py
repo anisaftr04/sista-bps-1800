@@ -24,6 +24,17 @@ st.set_page_config(
 
 load_css()
 
+# Trik untuk memaksa browser merefresh koordinat klik navbar saat pertama kali dibuka
+st.markdown(
+    """
+    <script>
+        window.addEventListener('load', function() {
+            window.dispatchEvent(new Event('resize'));
+        });
+    </script>
+    """,
+    unsafe_allow_html=True
+)
 
 # ============================================================
 # SESSION STATE
