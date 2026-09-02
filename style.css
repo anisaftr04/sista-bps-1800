@@ -311,3 +311,20 @@ div[data-testid="stPopoverBody"] [data-testid="stVerticalBlock"] {
         font-size: 9px !important; 
     }
 }
+
+/* ============================================================
+   FIX HYDRATION STAGE CLICK IN STREAMLIT
+   ============================================================ */
+/* Memaksa elemen tautan dan button di dalam sticky header agar selalu menangkap klik */
+.st-key-sista_sticky_header button,
+.st-key-sista_sticky_header a,
+.st-key-sista_sticky_header div[data-testid="stPopover"] {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1000000 !important;
+}
+
+/* Matikan interaksi elemen pembungkus kosong yang menutupi navbar */
+.stApp > header {
+    pointer-events: none !important;
+}
