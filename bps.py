@@ -24,17 +24,6 @@ st.set_page_config(
 
 load_css()
 
-# Trik untuk memaksa browser merefresh koordinat klik navbar saat pertama kali dibuka
-st.markdown(
-    """
-    <script>
-        window.addEventListener('load', function() {
-            window.dispatchEvent(new Event('resize'));
-        });
-    </script>
-    """,
-    unsafe_allow_html=True
-)
 
 # ============================================================
 # SESSION STATE
@@ -132,7 +121,7 @@ pg = st.navigation(
 
 
 # ============================================================
-# HEADER (dibungkus 1 container biar sticky + background nyatu)
+# HEADER STICKY BPS
 # ============================================================
 
 header_container = st.container(key="sista_sticky_header")
@@ -140,10 +129,9 @@ header_container = st.container(key="sista_sticky_header")
 with header_container:
 
     header_logo, header_menu, header_login = st.columns(
-        [2.0, 5.0, 0.7],
+        [2.2, 4.8, 0.8],
         vertical_alignment="center"
     )
-
 
     # --------------------------------------------------------
     # LOGO BPS
@@ -152,7 +140,7 @@ with header_container:
     with header_logo:
 
         logo_col, text_col = st.columns(
-            [0.5, 2.2],
+            [0.4, 2.3],
             vertical_alignment="center"
         )
 
@@ -160,7 +148,7 @@ with header_container:
 
             st.image(
                 "logo_bps.png",
-                width=48
+                width=45
             )
 
         with text_col:
@@ -178,47 +166,16 @@ with header_container:
                 unsafe_allow_html=True
             )
 
+    # --------------------------------------------------------
+    # MENU HEADER
+    # --------------------------------------------------------
 
-    # --------------------------------------------------------
-    # MENU HEADER (Menggunakan st.button & st.switch_page)
-    # --------------------------------------------------------
     with header_menu:
+
         menu1, menu2, menu3, menu4, menu5, menu6 = st.columns(
-            [0.8, 0.8, 1.15, 1.15, 0.65, 0.65],
+            [0.85, 0.95, 1.25, 0.95, 0.6, 0.6],
             vertical_alignment="center"
         )
-
-        # BERANDA
-        with menu1:
-            if st.button("🏠 Beranda", key="nav_home", use_container_width=True):
-                st.switch_page("pages/Home.py")
-
-        # DASHBOARD
-        with menu2:
-            if st.button("📊 Dashboard", key="nav_dash", use_container_width=True):
-                st.switch_page("pages/Dashboard.py")
-
-        # STATISTIK SOSIAL
-        with menu3:
-            with st.popover("Statistik Sosial ▾", use_container_width=True):
-                if st.button("💳 Kemiskinan", key="nav_kemiskinan", use_container_width=True):
-                    st.switch_page("pages/Kemiskinan.py")
-                if st.button("💼 Ketenagakerjaan", key="nav_kerja", use_container_width=True):
-                    st.switch_page("pages/Ketenagakerjaan.py")
-                if st.button("🎓 Pendidikan", key="nav_pendidikan", use_container_width=True):
-                    st.switch_page("pages/Pendidikan.py")
-                if st.button("👥 Kependudukan", key="nav_penduduk", use_container_width=True):
-                    st.switch_page("pages/Penduduk.py")
-                if st.button("🍽️ Pengeluaran Makanan", key="nav_pengeluaran", use_container_width=True):
-                    st.switch_page("pages/Pengeluaran_Makanan.py")
-                if st.button("🏠 Perumahan", key="nav_perumahan", use_container_width=True):
-                    st.switch_page("pages/Perumahan.py")
-
-        # DOKUMEN
-        with menu4:
-            if st.button("📄 Dokumen", key="nav_dokumen", use_container_width=True):
-                st.switch_page("pages/Dokumen.py")
-
 
         # ----------------------------------------------------
         # BERANDA
@@ -232,7 +189,6 @@ with header_container:
                 icon=":material/home:"
             )
 
-
         # ----------------------------------------------------
         # DASHBOARD
         # ----------------------------------------------------
@@ -245,14 +201,12 @@ with header_container:
                 icon=":material/dashboard:"
             )
 
-
         # ----------------------------------------------------
         # STATISTIK SOSIAL
         # ----------------------------------------------------
 
         with menu3:
 
-        # Tandai jika sedang berada di salah satu halaman Statistik Sosial
             statistik_sosial_aktif = pg in [
                 kemiskinan,
                 ketenagakerjaan,
@@ -264,21 +218,19 @@ with header_container:
 
             with st.container(key="statistik_sosial_menu"):
 
-            # Penanda khusus untuk CSS saat menu sedang aktif
                 if statistik_sosial_aktif:
                     st.markdown(
-                    '<div class="statistik-sosial-active"></div>',
-                    unsafe_allow_html=True
-                )
+                        '<div class="statistik-sosial-active"></div>',
+                        unsafe_allow_html=True
+                    )
 
                 with st.popover(
                     "Statistik Sosial",
                     use_container_width=True
                 ):
 
-
                     st.page_link(
-                    kemiskinan,
+                        kemiskinan,
                         label="Kemiskinan",
                         icon=":material/payments:"
                     )
@@ -312,6 +264,7 @@ with header_container:
                         label="Perumahan",
                         icon=":material/home:"
                     )
+
         # ----------------------------------------------------
         # DOKUMEN
         # ----------------------------------------------------
@@ -324,24 +277,23 @@ with header_container:
                 icon=":material/description:"
             )
 
-
         # ----------------------------------------------------
         # PENCARIAN
         # ----------------------------------------------------
 
         with menu5:
 
-            with st.popover(
-                "🔎",
-                use_container_width=True
-            ):
+            with st.container(key="btn_pencarian"):
+                with st.popover(
+                    "🔎",
+                    use_container_width=True
+                ):
 
-                st.text_input(
-                    "Cari dokumen",
-                    placeholder="Masukkan nama dokumen",
-                    key="header_search"
-                )
-
+                    st.text_input(
+                        "Cari dokumen",
+                        placeholder="Masukkan nama dokumen",
+                        key="header_search"
+                    )
 
         # ----------------------------------------------------
         # LOKASI
@@ -349,33 +301,34 @@ with header_container:
 
         with menu6:
 
-            with st.popover(
-                "📍",
-                use_container_width=True
-            ):
-                st.selectbox(
-                    "Pilih wilayah",
-                    [
-                        "Semua",
-                        "Bandar Lampung",
-                        "Metro",
-                        "Lampung Barat",
-                        "Lampung Selatan",
-                        "Lampung Tengah",
-                        "Lampung Timur",
-                        "Lampung Utara",
-                        "Mesuji",
-                        "Pesawaran",
-                        "Pesisir Barat",
-                        "Pringsewu",
-                        "Tanggamus",
-                        "Tulang Bawang",
-                        "Tulang Bawang Barat",
-                        "Way Kanan"
-                    ],
-                    key="header_wilayah"
-                )
+            with st.container(key="btn_lokasi"):
+                with st.popover(
+                    "📍",
+                    use_container_width=True
+                ):
 
+                    st.selectbox(
+                        "Pilih wilayah",
+                        [
+                            "Semua",
+                            "Bandar Lampung",
+                            "Metro",
+                            "Lampung Barat",
+                            "Lampung Selatan",
+                            "Lampung Tengah",
+                            "Lampung Timur",
+                            "Lampung Utara",
+                            "Mesuji",
+                            "Pesawaran",
+                            "Pesisir Barat",
+                            "Pringsewu",
+                            "Tanggamus",
+                            "Tulang Bawang",
+                            "Tulang Bawang Barat",
+                            "Way Kanan"
+                        ],
+                        key="header_wilayah"
+                    )
 
     # --------------------------------------------------------
     # LOGIN ADMIN

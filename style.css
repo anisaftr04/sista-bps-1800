@@ -13,21 +13,17 @@
 header[data-testid="stHeader"] {
     background: transparent !important;
     height: 0 !important;
-}
-
-header[data-testid="stHeader"] > div {
     display: none !important;
 }
-
 
 /* ============================================================
    AREA KONTEN UTAMA
    ============================================================ */
 .block-container {
     max-width: 1280px !important;
-    padding-top: 90px !important; /* Memberikan ruang otomatis untuk navbar */
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+    padding-top: 20px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
     padding-bottom: 60px !important;
     margin-top: 0 !important;
     position: relative !important;
@@ -35,36 +31,41 @@ header[data-testid="stHeader"] > div {
 }
 
 /* ============================================================
-   HEADER STICKY BPS (FIX COORDINATE HYDRATION)
+   HEADER STICKY BPS (CSS STICKY FIX UNTUK HYDRATION STREAMLIT)
    ============================================================ */
 .st-key-sista_sticky_header {
-    position: fixed !important;
+    position: sticky !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
     z-index: 999999 !important;
     background-color: #0067b9 !important;
-    padding: 10px 30px !important;
-    
-    /* Mencegah browser salah menghitung event listener klik saat initial load */
+    padding: 12px 30px 15px 30px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     isolation: isolate !important;
-    transform: translateZ(0) !important;
-    -webkit-transform: translateZ(0) !important;
     pointer-events: auto !important;
 }
 
-/* Memastikan tombol di dalam header selalu bisa menangkap klik */
-.st-key-sista_sticky_header * {
+.st-key-sista_sticky_header [data-testid="stHorizontalBlock"] {
+    align-items: center !important;
+}
+
+/* Memaksa event klik selalu diterima tombol/link di navbar */
+.st-key-sista_sticky_header button,
+.st-key-sista_sticky_header a,
+.st-key-sista_sticky_header div[data-testid="stPopover"] {
     pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1000000 !important;
 }
 
 /* Identitas Brand BPS */
 .bps-name {
     color: #ffffff !important;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     line-height: 1.15;
     white-space: nowrap;
@@ -72,9 +73,9 @@ header[data-testid="stHeader"] > div {
 
 .bps-province {
     color: #ffffff !important;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
-    margin-top: 3px;
+    margin-top: 2px;
     letter-spacing: 0.5px;
     white-space: nowrap;
 }
@@ -88,7 +89,7 @@ header[data-testid="stHeader"] > div {
     border: none !important;
     border-radius: 7px !important;
     box-shadow: none !important;
-    padding: 9px 10px !important;
+    padding: 8px 10px !important;
     min-height: 38px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
@@ -102,7 +103,7 @@ header[data-testid="stHeader"] > div {
 }
 
 .st-key-sista_sticky_header a[data-testid="stPageLink-NavLink"]:hover {
-    background-color: rgba(255, 255, 255, 0.12) !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Indikator Garis Bawah Menu Aktif */
@@ -114,16 +115,16 @@ header[data-testid="stHeader"] > div {
 .st-key-sista_sticky_header a[data-testid="stPageLink-NavLink"][aria-current="page"]::after {
     content: "";
     position: absolute;
-    left: 10px;
-    right: 10px;
-    bottom: 0px;
+    left: 8px;
+    right: 8px;
+    bottom: -2px;
     height: 3px;
     background-color: #ffffff;
     border-radius: 3px 3px 0 0;
 }
 
 /* ============================================================
-   SEMUA POPOVER LAINNYA (Termasuk Statistik Sosial) -> TRANSPARAN
+   SEMUA POPOVER LAINNYA (Termasuk Statistik Sosial)
    ============================================================ */
 .st-key-sista_sticky_header div[data-testid="stPopover"] > button {
     background: transparent !important;
@@ -132,7 +133,7 @@ header[data-testid="stHeader"] > div {
     box-shadow: none !important;
     border-radius: 7px !important;
     min-height: 38px !important;
-    padding: 9px 10px !important;
+    padding: 8px 10px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
 }
@@ -142,12 +143,11 @@ header[data-testid="stHeader"] > div {
 }
 
 .st-key-sista_sticky_header div[data-testid="stPopover"] > button:hover {
-    background-color: rgba(255, 255, 255, 0.12) !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* ============================================================
-   KHUSUS TOMBOL PENCARIAN & LOKASI -> KOTAK PUTIH
-   (Memanggil langsung key unik dari Python)
+   KHUSUS TOMBOL PENCARIAN & LOKASI (KOTAK PUTIH)
    ============================================================ */
 .st-key-btn_pencarian button,
 .st-key-btn_lokasi button {
@@ -155,8 +155,8 @@ header[data-testid="stHeader"] > div {
     color: #0067b9 !important;
     border: 1px solid #ffffff !important;
     border-radius: 8px !important;
-    min-height: 38px !important;
-    padding: 5px 12px !important;
+    min-height: 36px !important;
+    padding: 4px 10px !important;
     box-shadow: none !important;
     font-size: 13px !important;
     font-weight: 700 !important;
@@ -183,8 +183,8 @@ header[data-testid="stHeader"] > div {
     border-radius: 8px !important;
     font-size: 13px !important;
     font-weight: 700 !important;
-    min-height: 38px !important;
-    padding: 5px 12px !important;
+    min-height: 36px !important;
+    padding: 4px 10px !important;
     box-shadow: none !important;
 }
 
@@ -203,11 +203,10 @@ header[data-testid="stHeader"] > div {
    ============================================================ */
 .header-line {
     width: 100%;
-    height: 2px;
-    background-color: #ffffff;
-    opacity: 0.35;
-    margin-top: 10px;
-    margin-bottom: 35px;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin-top: 5px;
+    margin-bottom: 15px;
 }
 
 /* ============================================================
@@ -218,6 +217,7 @@ div[data-testid="stPopoverBody"] {
     box-sizing: border-box !important;
     width: 220px !important;
     max-width: 220px !important;
+    z-index: 1000005 !important;
 }
 
 div[data-testid="stPopoverBody"] a[data-testid="stPageLink-NavLink"] {
@@ -226,9 +226,9 @@ div[data-testid="stPopoverBody"] a[data-testid="stPageLink-NavLink"] {
     border: none !important;
     box-shadow: none !important;
     border-radius: 7px !important;
-    padding: 5px 8px !important;
-    min-height: 30px !important;
-    margin: 1px 0 !important;
+    padding: 6px 10px !important;
+    min-height: 32px !important;
+    margin: 2px 0 !important;
     font-size: 13px !important;
     font-weight: 500 !important;
     white-space: nowrap !important;
@@ -251,80 +251,25 @@ div[data-testid="stPopoverBody"] a[data-testid="stPageLink-NavLink"][aria-curren
 }
 
 div[data-testid="stPopoverBody"] [data-testid="stVerticalBlock"] {
-    gap: 3px !important;
+    gap: 2px !important;
 }
 
 /* ============================================================
-   RESPONSIVE (LAYAR KECIL)
+   RESPONSIVE MODES (FIX MOBILE & DESKTOP MODE DI HP)
    ============================================================ */
-@media (max-width: 1100px) {
+@media screen and (max-width: 992px) {
     .st-key-sista_sticky_header {
-        padding: 12px 20px 20px 20px !important;
+        padding: 10px 15px !important;
+        position: relative !important; /* Di HP berubah jadi relatif agar tidak menutupi layar */
     }
-    .bps-name { font-size: 13px; }
-    .bps-province { font-size: 10px; }
     
+    .bps-name { font-size: 12px !important; }
+    .bps-province { font-size: 10px !important; }
+
     .st-key-sista_sticky_header a[data-testid="stPageLink-NavLink"],
     .st-key-sista_sticky_header div[data-testid="stPopover"] > button,
     .st-key-sista_sticky_header button[kind="primary"] {
         font-size: 11px !important;
-        padding: 8px 6px !important;
+        padding: 6px 4px !important;
     }
-}
-
-/* ============================================================
-   MEMPERPENDEK TINGGI KOTAK BANNER UTAMA
-   ============================================================ */
-/* Sesuaikan class atau elemen pembungkus banner utama Anda */
-.stApp [data-testid="stVerticalBlock"] > div:has(> div.element-container) style-banner {
-    padding-top: 10px !important;
-    padding-bottom: 20px !important;
-}
-
-.st-key-box_kategori_perumahan,
-.st-key-box_tahun_perumahan,
-.st-key-box_wilayah_perumahan {
-    margin-top: -12px;
-}
-
-/* ============================================================
-   RESPONSIVE MODES (MOBILE & TABLET FIX)
-   ============================================================ */
-@media screen and (max-width: 768px) {
-    /* Atur ulang padding header di layar HP agar tidak terlalu tebal */
-    .st-key-sista_sticky_header {
-        padding: 10px 15px !important;
-        position: fixed !important;
-    }
-    
-    /* Beri jarak lebih pada konten utama agar di HP tidak tertutup navbar */
-    .block-container {
-        padding-top: 140px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-    }
-
-    .bps-name { 
-        font-size: 11px !important; 
-    }
-    .bps-province { 
-        font-size: 9px !important; 
-    }
-}
-
-/* ============================================================
-   FIX HYDRATION STAGE CLICK IN STREAMLIT
-   ============================================================ */
-/* Memaksa elemen tautan dan button di dalam sticky header agar selalu menangkap klik */
-.st-key-sista_sticky_header button,
-.st-key-sista_sticky_header a,
-.st-key-sista_sticky_header div[data-testid="stPopover"] {
-    pointer-events: auto !important;
-    position: relative !important;
-    z-index: 1000000 !important;
-}
-
-/* Matikan interaksi elemen pembungkus kosong yang menutupi navbar */
-.stApp > header {
-    pointer-events: none !important;
 }
