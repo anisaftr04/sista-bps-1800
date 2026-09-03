@@ -32,6 +32,33 @@ load_css()
 if "is_admin" not in st.session_state:
     st.session_state["is_admin"] = False
 
+if "mobile_nav_open" not in st.session_state:
+    st.session_state["mobile_nav_open"] = False
+
+
+# ============================================================
+# DAFTAR WILAYAH
+# ============================================================
+
+DAFTAR_WILAYAH = [
+    "Semua",
+    "Bandar Lampung",
+    "Metro",
+    "Lampung Barat",
+    "Lampung Selatan",
+    "Lampung Tengah",
+    "Lampung Timur",
+    "Lampung Utara",
+    "Mesuji",
+    "Pesawaran",
+    "Pesisir Barat",
+    "Pringsewu",
+    "Tanggamus",
+    "Tulang Bawang",
+    "Tulang Bawang Barat",
+    "Way Kanan"
+]
+
 
 # ============================================================
 # DAFTAR HALAMAN
@@ -293,7 +320,8 @@ with header_container:
 
             with st.popover(
                 "🔎",
-                use_container_width=True
+                use_container_width=True,
+                key="desktop_search_button"
             ):
 
                 st.text_input(
@@ -311,28 +339,12 @@ with header_container:
 
             with st.popover(
                 "📍",
-                use_container_width=True
+                use_container_width=True,
+                key="desktop_location_button"
             ):
                 st.selectbox(
                     "Pilih wilayah",
-                    [
-                        "Semua",
-                        "Bandar Lampung",
-                        "Metro",
-                        "Lampung Barat",
-                        "Lampung Selatan",
-                        "Lampung Tengah",
-                        "Lampung Timur",
-                        "Lampung Utara",
-                        "Mesuji",
-                        "Pesawaran",
-                        "Pesisir Barat",
-                        "Pringsewu",
-                        "Tanggamus",
-                        "Tulang Bawang",
-                        "Tulang Bawang Barat",
-                        "Way Kanan"
-                    ],
+                    DAFTAR_WILAYAH,
                     key="header_wilayah"
                 )
 
@@ -342,6 +354,38 @@ with header_container:
     # --------------------------------------------------------
 
     with header_login:
+
+        with st.container(
+            key="mobile_header_actions",
+            horizontal=True,
+            horizontal_alignment="right",
+            vertical_alignment="center",
+            gap="small"
+        ):
+
+            with st.popover(
+                "Cari",
+                icon=":material/search:",
+                key="mobile_search_button",
+                help="Cari dokumen"
+            ):
+
+                st.text_input(
+                    "Cari dokumen",
+                    placeholder="Masukkan nama dokumen",
+                    key="mobile_header_search"
+                )
+
+            if st.button(
+                "Menu",
+                icon=":material/menu:",
+                key="mobile_menu_open",
+                help="Buka navigasi",
+                use_container_width=True
+            ):
+
+                st.session_state["mobile_nav_open"] = True
+                st.rerun()
 
         if st.session_state["is_admin"]:
 
@@ -364,6 +408,197 @@ with header_container:
             ):
 
                 login_dialog()
+
+
+# ============================================================
+# NAVIGASI DRAWER MOBILE
+# ============================================================
+
+def mobile_navigation_button(label, page, icon, key):
+
+    is_active = pg == page
+    container_key = (
+        f"mobile_nav_item_{key}_active"
+        if is_active
+        else f"mobile_nav_item_{key}"
+    )
+
+    with st.container(key=container_key):
+
+        if st.button(
+            label,
+            icon=icon,
+            key=f"mobile_go_{key}",
+            type="tertiary",
+            use_container_width=True
+        ):
+
+            st.session_state["mobile_nav_open"] = False
+            st.switch_page(page)
+
+
+if st.session_state["mobile_nav_open"]:
+
+    with st.container(key="mobile_nav_overlay"):
+
+        with st.container(key="mobile_nav_drawer"):
+
+            drawer_title, drawer_close = st.columns(
+                [5, 1],
+                vertical_alignment="center"
+            )
+
+            with drawer_title:
+
+                st.markdown(
+                    """
+                    <div class="mobile-drawer-brand">
+                        <div class="mobile-drawer-brand-name">
+                            SISTA
+                        </div>
+                        <div class="mobile-drawer-brand-subtitle">
+                            BPS Provinsi Lampung
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            with drawer_close:
+
+                if st.button(
+                    "Tutup",
+                    icon=":material/close:",
+                    key="mobile_menu_close",
+                    help="Tutup navigasi",
+                    use_container_width=True
+                ):
+
+                    st.session_state["mobile_nav_open"] = False
+                    st.rerun()
+
+            st.markdown(
+                '<div class="mobile-nav-label">Navigasi</div>',
+                unsafe_allow_html=True
+            )
+
+            mobile_navigation_button(
+                "Beranda",
+                home,
+                ":material/home:",
+                "home"
+            )
+
+            mobile_navigation_button(
+                "Dashboard",
+                dashboard,
+                ":material/dashboard:",
+                "dashboard"
+            )
+
+            mobile_navigation_button(
+                "Dokumen",
+                dokumen,
+                ":material/description:",
+                "dokumen"
+            )
+
+            with st.expander(
+                "Statistik Sosial",
+                expanded=statistik_sosial_aktif,
+                icon=":material/bar_chart:",
+                key="mobile_stats_dropdown"
+            ):
+
+                mobile_navigation_button(
+                    "Kemiskinan",
+                    kemiskinan,
+                    ":material/payments:",
+                    "kemiskinan"
+                )
+
+                mobile_navigation_button(
+                    "Ketenagakerjaan",
+                    ketenagakerjaan,
+                    ":material/work:",
+                    "ketenagakerjaan"
+                )
+
+                mobile_navigation_button(
+                    "Pendidikan",
+                    pendidikan,
+                    ":material/school:",
+                    "pendidikan"
+                )
+
+                mobile_navigation_button(
+                    "Kependudukan",
+                    penduduk,
+                    ":material/groups:",
+                    "penduduk"
+                )
+
+                mobile_navigation_button(
+                    "Pengeluaran Makanan",
+                    pengeluaran,
+                    ":material/restaurant:",
+                    "pengeluaran"
+                )
+
+                mobile_navigation_button(
+                    "Perumahan",
+                    perumahan,
+                    ":material/home:",
+                    "perumahan"
+                )
+
+            with st.container(key="mobile_nav_footer"):
+
+                st.markdown(
+                    '<div class="mobile-nav-label mobile-location-label">'
+                    'Wilayah'
+                    '</div>',
+                    unsafe_allow_html=True
+                )
+
+                st.selectbox(
+                    "Pilih wilayah",
+                    DAFTAR_WILAYAH,
+                    key="mobile_header_wilayah",
+                    label_visibility="collapsed"
+                )
+
+                if st.session_state["is_admin"]:
+
+                    if st.button(
+                        "Logout Admin",
+                        icon=":material/logout:",
+                        key="mobile_admin_logout",
+                        type="primary",
+                        use_container_width=True
+                    ):
+
+                        st.session_state["is_admin"] = False
+                        st.session_state["mobile_nav_open"] = False
+                        st.rerun()
+
+                else:
+
+                    if st.button(
+                        "Login Admin",
+                        icon=":material/login:",
+                        key="mobile_admin_login",
+                        type="primary",
+                        use_container_width=True
+                    ):
+
+                        st.session_state["mobile_nav_open"] = False
+                        st.session_state["mobile_login_requested"] = True
+                        st.rerun()
+
+
+if st.session_state.pop("mobile_login_requested", False):
+    login_dialog()
 
 
 # ============================================================

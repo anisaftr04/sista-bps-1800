@@ -99,25 +99,26 @@ def login_dialog():
 @st.dialog("🔒 Akses Admin")
 def edit_login_dialog():
 
-    st.markdown(
+    konten = textwrap.dedent(
         """
         <div style="text-align:center;">
-            <div style="font-size:45px; margin-bottom:10px;">
+
+            <div style="font-size:45px;">
                 🔐
             </div>
-            <h3 style="margin-bottom:10px;">
+
+            <h3>
                 Login Admin Diperlukan
             </h3>
-            <p style="font-size:16px; margin-bottom:20px;">
-                Untuk mengedit data, Anda perlu login sebagai admin terlebih dahulu.
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
-    if st.button("Login sebagai Admin", type="primary", use_container_width=True):
-        st.rerun()
+            <p style="font-size:16px;">
+                Untuk mengedit data, Anda perlu
+                login sebagai admin terlebih dahulu.
+            </p>
+
+        </div>
+        """
+    ).strip()
 
     st.markdown(
         konten,

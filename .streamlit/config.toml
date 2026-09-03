@@ -1,2 +1,23 @@
 [client]
 toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#0067b9"
+backgroundColor = "#f5fbfc"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#17365d"
+linkColor = "#0067b9"
+blueColor = "#0067b9"
+blueBackgroundColor = "#edf5fc"
+blueTextColor = "#005a9f"
+orangeColor = "#f39a20"
+greenColor = "#5aa832"
+grayColor = "#60758c"
+borderColor = "#d5e3f1"
+dataframeBorderColor = "#d5e3f1"
+dataframeHeaderBackgroundColor = "#edf5fc"
+showWidgetBorder = true
+chartCategoricalColors = ["#0067b9", "#f39a20", "#5aa832", "#3a8fd1", "#17365d", "#78bce3"]
+chartSequentialColors = ["#eaf4fb", "#d5e9f6", "#badbea", "#8fc6e3", "#62afd9", "#3796cc", "#147fc0", "#0067b9", "#005a9f", "#17365d"]
+chartDivergingColors = ["#a85f00", "#c87812", "#e4932b", "#f4b45f", "#f9d9a7", "#dceefa", "#a9d2ec", "#6fb3dd", "#2d8ac7", "#0067b9"]

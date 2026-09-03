@@ -28,7 +28,7 @@ st.markdown(
        BACKGROUND
        ======================================================== */
     .stApp {
-        background: #f5f8fc;
+        background: #f5fbfc;
     }
 
     .block-container {
@@ -47,7 +47,7 @@ st.markdown(
         min-height: 360px;
         padding: 55px 60px;
         border-radius: 28px;
-        background: linear-gradient(115deg, #0868c9 0%, #0879d8 52%, #f39a20 100%);
+        background: linear-gradient(115deg, #0067b9 0%, #1684c4 68%, #f39a20 100%);
         color: white;
         box-shadow: 0 12px 35px rgba(0, 75, 150, 0.16);
     }
@@ -177,14 +177,14 @@ st.markdown(
     }
 
     .home-section-title {
-        color: #163d68;
+        color: #17365d;
         font-size: 27px;
         font-weight: 800;
         margin-bottom: 8px;
     }
 
     .home-section-description {
-        color: #6b7785;
+        color: #60758c;
         font-size: 14px;
         margin-bottom: 13px;
     }
@@ -194,7 +194,7 @@ st.markdown(
         height: 4px;
         margin: 0 auto;
         border-radius: 20px;
-        background: #f28c18;
+        background: #f39a20;
     }
 
     /* ========================================================
@@ -205,38 +205,38 @@ st.markdown(
         min-height: 38px;
         border-radius: 10px;
         border: 1px solid #d5e3f1;
-        background: #0868c9;
+        background: #0067b9;
         color: white;
         font-weight: 600;
         transition: all 0.2s ease;
     }
 
     div.stButton > button:hover {
-        background: #116bc5;
-        border-color: #116bc5;
+        background: #005a9f;
+        border-color: #005a9f;
     }
 
     /* ========================================================
        INFO SECTION
        ======================================================== */
     .info-card {
-        background: linear-gradient(135deg, #edf6ff, #ffffff);
+        background: linear-gradient(135deg, #edf5fc, #ffffff);
         min-height: 220px;
         border-radius: 20px;
         padding: 28px;
-        border: 1px solid #e5ebf2;
+        border: 1px solid #d5e3f1;
         box-shadow: 0 5px 20px rgba(0,50,100,0.05);
     }
 
     .info-card-title {
-        color: #116bc5;
+        color: #0067b9;
         font-size: 18px;
         font-weight: 800;
         margin-bottom: 15px;
     }
 
     .info-card-text {
-        color: #64748b;
+        color: #60758c;
         font-size: 14px;
         line-height: 1.8;
     }
@@ -245,7 +245,7 @@ st.markdown(
        ANGKA
        ======================================================== */
     .number-card {
-        background: linear-gradient(135deg, #edf6ff, #ffffff);
+        background: linear-gradient(135deg, #edf5fc, #ffffff);
         min-height: 220px;
         border-radius: 20px;
         padding: 28px;
@@ -253,7 +253,7 @@ st.markdown(
     }
 
     .number-title {
-        color: #116bc5;
+        color: #0067b9;
         font-size: 18px;
         font-weight: 800;
         margin-bottom: 25px;
@@ -266,14 +266,14 @@ st.markdown(
     }
 
     .number-value {
-        color: #123b68;
+        color: #17365d;
         font-size: 30px;
         font-weight: 800;
         line-height: 1;
     }
 
     .number-label {
-        color: #64748b;
+        color: #60758c;
         font-size: 12px;
         line-height: 1.5;
         margin-top: 8px;
@@ -283,23 +283,23 @@ st.markdown(
        WILAYAH
        ======================================================== */
     .region-card {
-        background: linear-gradient(135deg, #edf6ff, #ffffff);
+        background: linear-gradient(135deg, #edf5fc, #ffffff);
         min-height: 220px;
         border-radius: 20px;
         padding: 28px;
-        border: 1px solid #e5ebf2;
+        border: 1px solid #d5e3f1;
         box-shadow: 0 5px 20px rgba(0,50,100,0.05);
     }
 
     .region-title {
-        color: #116bc5;
+        color: #0067b9;
         font-size: 18px;
         font-weight: 800;
         margin-bottom: 12px;
     }
 
     .region-text {
-        color: #64748b;
+        color: #60758c;
         font-size: 14px;
         line-height: 1.7;
         margin-bottom: 15px;
@@ -313,7 +313,7 @@ st.markdown(
         margin-left: -50px;
         margin-right: -50px;
         padding: 28px 55px;
-        background: #1264ad;
+        background: #0067b9;
         color: white;
         display: flex;
         justify-content: space-between;
@@ -334,9 +334,35 @@ st.markdown(
     }
 
     @media (max-width: 700px) {
-        .hero { padding: 40px 30px; }
+        .sista-hero {
+            min-height: 0;
+            padding: 34px 24px;
+        }
+        .hero-chart {
+            right: -80px;
+            bottom: 20px;
+        }
         .hero-title { font-size: 34px; }
+        .hero-label {
+            font-size: 19px;
+            letter-spacing: 1px;
+        }
         .hero-description { font-size: 15px; }
+        .home-section {
+            margin-top: 34px;
+        }
+        .home-section-title {
+            font-size: 24px;
+        }
+        .info-card,
+        .number-card,
+        .region-card {
+            min-height: 0;
+            padding: 24px;
+        }
+        .number-wrapper {
+            flex-wrap: wrap;
+        }
         .home-footer {
             margin-left: -20px;
             margin-right: -20px;
@@ -344,7 +370,29 @@ st.markdown(
             flex-direction: column;
             align-items: flex-start;
         }
+        .home-footer > div:first-child {
+            flex-wrap: wrap;
+        }
         .footer-right { text-align: left; }
+    }
+
+    @media (max-width: 400px) {
+        .sista-hero {
+            padding: 30px 20px;
+        }
+        .hero-title { font-size: 31px; }
+        .hero-label { font-size: 17px; }
+        .hero-description {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .hero-pill {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+        .home-section-title {
+            font-size: 22px;
+        }
     }
     </style>
     """,
@@ -414,48 +462,48 @@ kategori = [
         "nama": "Kependudukan",
         "deskripsi": "Jumlah dan karakteristik penduduk.",
         "page": "Penduduk", # Sesuaikan URL halaman ini jika perlu (misal: /Penduduk)
-        "color_main": "#1e40af", 
-        "color_bg": "#dbeafe"
+        "color_main": "#0067b9",
+        "color_bg": "#edf5fc"
     },
     {
         "icon": "icon-poverty.png",
         "nama": "Kemiskinan",
         "deskripsi": "Kondisi dan perkembangan kemiskinan.",
         "page": "Kemiskinan",
-        "color_main": "#ea580c", 
-        "color_bg": "#ffedd5"
+        "color_main": "#0067b9",
+        "color_bg": "#edf5fc"
     },
     {
         "icon": "icon-work.png",
         "nama": "Ketenagakerjaan",
         "deskripsi": "Kondisi ketenagakerjaan masyarakat.",
         "page": "Ketenagakerjaan",
-        "color_main": "#16a34a", 
-        "color_bg": "#dcfce7"
+        "color_main": "#0067b9",
+        "color_bg": "#edf5fc"
     },
     {
         "icon": "icon-toga.png",
         "nama": "Pendidikan",
         "deskripsi": "Indikator pendidikan penduduk.",
         "page": "Pendidikan",
-        "color_main": "#6d28d9", 
-        "color_bg": "#ede9fe"
+        "color_main": "#0067b9",
+        "color_bg": "#edf5fc"
     },
     {
         "icon": "icon-food.png",
         "nama": "Pengeluaran Makanan",
         "deskripsi": "Gambaran pengeluaran konsumsi makanan.",
         "page": "Pengeluaran_Makanan",
-        "color_main": "#ca8a04", 
-        "color_bg": "#fef9c3"
+        "color_main": "#0067b9",
+        "color_bg": "#edf5fc"
     },
     {
         "icon": "icon-house.png",
         "nama": "Perumahan",
         "deskripsi": "Kondisi dan karakteristik perumahan.",
         "page": "Perumahan",
-        "color_main": "#0d9488", 
-        "color_bg": "#ccfbf1"
+        "color_main": "#0067b9",
+        "color_bg": "#edf5fc"
     }
 ]
 
@@ -485,7 +533,7 @@ for index, item in enumerate(kategori):
         # Menampilkan HTML Card
         st.html(
             f""" 
-            <div style="background: white; border-radius: 18px; padding: 25px 17px; text-align: center; border: 1px solid #e5ebf2; box-shadow: 0 5px 18px rgba(0,50,100,0.06); min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 20px;">
+            <div style="background: #ffffff; border-radius: 18px; padding: 25px 17px; text-align: center; border: 1px solid #d5e3f1; box-shadow: 0 5px 18px rgba(0,50,100,0.06); min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 20px;">
                 
                 <div>
                     <!-- Latar Belakang Ikon Dinamis -->
@@ -493,11 +541,11 @@ for index, item in enumerate(kategori):
                         {tampilan_ikon}
                     </div>
                     
-                    <div style="color: #163d68; font-size: 18px; font-weight: 800; margin-bottom: 8px;">
+                    <div style="color: #17365d; font-size: 18px; font-weight: 800; margin-bottom: 8px;">
                         {item['nama'].upper()}
                     </div>
                     
-                    <div style="color: #718096; font-size: 16px; line-height: 1.55; min-height: 45px;">
+                    <div style="color: #60758c; font-size: 16px; line-height: 1.55; min-height: 45px;">
                         {item['deskripsi']}
                     </div>
                 </div>

@@ -23,7 +23,7 @@ st.markdown(
     <style>
     .breadcrumb-container {
         font-size: 15px;
-        color: #555555;
+        color: #60758c;
         margin-bottom: 15px;
         margin-top: -10px;
     }

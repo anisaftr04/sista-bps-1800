@@ -35,7 +35,7 @@ st.markdown(
 
     .breadcrumb-container {
         font-size: 15px;
-        color: #555555;
+        color: #60758c;
         margin-bottom: 15px;
         margin-top: -10px;
     }
@@ -58,7 +58,7 @@ st.markdown(
         width: 100%;
         overflow-x: auto;
         margin-top: 10px;
-        border: 1px solid #d5dbe0;
+        border: 1px solid #d5e3f1;
         border-radius: 8px;
     }
 
@@ -71,19 +71,20 @@ st.markdown(
 
     .tabel-perumahan th,
     .tabel-perumahan td {
-        border: 1px solid #d5dbe0;
+        border: 1px solid #d5e3f1;
         padding: 10px 12px;
         text-align: center;
         white-space: nowrap;
     }
 
     .tabel-perumahan thead th {
-        background-color: #f1f4f7;
+        color: #17365d;
+        background-color: #edf5fc;
         font-weight: 600;
     }
 
     .tabel-perumahan thead tr:first-child th {
-        background-color: #e8eef4;
+        background-color: #dceafa;
         font-size: 15px;
     }
 
@@ -93,17 +94,17 @@ st.markdown(
         font-weight: 500;
         position: sticky;
         left: 0;
-        background-color: white;
+        background-color: #ffffff;
         z-index: 2;
     }
 
     .tabel-perumahan thead th:first-child {
-        background-color: #e8eef4;
+        background-color: #dceafa;
         z-index: 3;
     }
 
     .tabel-perumahan tbody tr:hover td {
-        background-color: #f7f9fb;
+        background-color: #f5fbfc;
     }
 
     /* =====================================================
