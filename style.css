@@ -95,7 +95,7 @@ header[data-testid="stHeader"] > div {
     isolation: isolate;
     pointer-events: none !important;
     background-color: #0067b9 !important;
-    padding: 15px 40px 25px 40px !important;
+    padding: 8px 40px 18px 40px !important;
 }
 
 /* Area kosong header tidak menutup konten, kontrolnya tetap dapat diklik. */
@@ -127,21 +127,27 @@ header[data-testid="stHeader"] > div {
 /* Identitas Brand BPS */
 .bps-name {
     color: #ffffff !important;
-    font-size: 15px;
-    font-weight: 800;
-    line-height: 1.15;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.0;
+    font-style: italic;
     white-space: nowrap;
 }
 
 .bps-province {
     color: #ffffff !important;
-    font-size: 15px;
-    font-weight: 800;
-    margin-top: 3px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 0px;
     letter-spacing: 0.5px;
+    font-style: italic;
     white-space: nowrap;
 }
 
+.bps-name,
+.bps-province{
+    transform: translateY(-2px) !important;
+}
 /* ============================================================
    MENU NAVIGASI TEKS (Beranda, Dashboard, Dokumen)
    ============================================================ */
@@ -270,6 +276,10 @@ button[data-testid="stPopoverButton"] {
     min-height: 38px !important;
     padding: 5px 12px !important;
     box-shadow: none !important;
+}
+
+.st-key-header_login_button {
+    transform: translateY(-8px) !important; 
 }
 
 .st-key-sista_sticky_header button[kind="primary"] * {
