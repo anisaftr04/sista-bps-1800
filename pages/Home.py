@@ -42,10 +42,10 @@ st.markdown(
        ======================================================== */
     .sista-hero {
         position: relative;
-        margin-top: -50px;
+        margin-top: -80px;
         overflow: hidden;
         min-height: 360px;
-        padding: 55px 60px;
+        padding: 25px 60px;
         border-radius: 28px;
         background: linear-gradient(115deg, #0067b9 0%, #1684c4 68%, #f39a20 100%);
         color: white;
@@ -171,7 +171,7 @@ st.markdown(
        SECTION
        ======================================================== */
     .home-section {
-        margin-top: 45px;
+        margin-top: 35px;
         margin-bottom: 25px;
         text-align: center;
     }
@@ -312,6 +312,7 @@ st.markdown(
         margin-top: 50px;
         margin-left: -50px;
         margin-right: -50px;
+        margin-bottom: -65px;
         padding: 28px 55px;
         background: #0067b9;
         color: white;

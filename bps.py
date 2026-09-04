@@ -127,7 +127,7 @@ upload = st.Page(
 
 
 # ============================================================
-# NAVIGASI STREAMLIT
+# CEK HALAMAN STATISTIK SOSIAL YANG AKTIF
 # ============================================================
 
 pg = st.navigation(
@@ -147,11 +147,27 @@ pg = st.navigation(
 )
 
 
+# ------------------------------------------------------------
+# True jika sedang berada di salah satu halaman Statistik Sosial
+# ------------------------------------------------------------
+
+statistik_sosial_aktif = pg in [
+    kemiskinan,
+    ketenagakerjaan,
+    pendidikan,
+    penduduk,
+    pengeluaran,
+    perumahan
+]
+
+
 # ============================================================
-# HEADER (dibungkus 1 container biar sticky + background nyatu)
+# HEADER STICKY
 # ============================================================
 
-header_container = st.container(key="sista_sticky_header")
+header_container = st.container(
+    key="sista_sticky_header"
+)
 
 with header_container:
 
@@ -161,9 +177,9 @@ with header_container:
     )
 
 
-    # --------------------------------------------------------
+    # ========================================================
     # LOGO BPS
-    # --------------------------------------------------------
+    # ========================================================
 
     with header_logo:
 
@@ -195,9 +211,9 @@ with header_container:
             )
 
 
-    # --------------------------------------------------------
-    # MENU HEADER
-    # --------------------------------------------------------
+    # ========================================================
+    # MENU NAVBAR
+    # ========================================================
 
     with header_menu:
 
@@ -207,114 +223,176 @@ with header_container:
         )
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # BERANDA
-        # ----------------------------------------------------
+        # ====================================================
 
         with menu1:
 
-            st.page_link(
-                home,
-                label="Beranda",
-                icon=":material/home:"
-            )
+            if pg == home:
+                with st.container(key="beranda_aktif"):
+                    st.page_link(
+                    home,
+                        label="Beranda",
+                        icon=":material/home:"
+                    )
+            else:
+                with st.container(key="beranda_normal"):
+                    st.page_link(
+                    home,
+                        label="Beranda",
+                        icon=":material/home:"
+                )
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # DASHBOARD
-        # ----------------------------------------------------
+        # ====================================================
 
         with menu2:
 
-            st.page_link(
-                dashboard,
-                label="Dashboard",
-                icon=":material/dashboard:"
-            )
+            if pg == dashboard:
+                with st.container(key="dashboard_aktif"):
+                    st.page_link(
+                        dashboard,
+                        label="Dashboard",
+                        icon=":material/dashboard:"
+                    )
+            else:
+                with st.container(key="dashboard_normal"):
+                    st.page_link(
+                        dashboard,
+                        label="Dashboard",
+                        icon=":material/dashboard:"
+                    )
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # STATISTIK SOSIAL
-        # ----------------------------------------------------
+        # ====================================================
 
         with menu3:
 
-        # Tandai jika sedang berada di salah satu halaman Statistik Sosial
-            statistik_sosial_aktif = pg in [
-                kemiskinan,
-                ketenagakerjaan,
-                pendidikan,
-                penduduk,
-                pengeluaran,
-                perumahan
-            ]
+            if statistik_sosial_aktif:
 
-            with st.container(key="statistik_sosial_menu"):
-
-            # Penanda khusus untuk CSS saat menu sedang aktif
-                if statistik_sosial_aktif:
-                    st.markdown(
-                    '<div class="statistik-sosial-active"></div>',
-                    unsafe_allow_html=True
-                )
-
-                with st.popover(
-                    "Statistik Sosial",
-                    use_container_width=True
+                with st.container(
+                    key="statistik_sosial_aktif"
                 ):
 
+                    with st.popover(
+                        "Statistik Sosial",
+                        use_container_width=True
+                    ):
 
-                    st.page_link(
-                    kemiskinan,
-                        label="Kemiskinan",
-                        icon=":material/payments:"
-                    )
+                        st.page_link(
+                            kemiskinan,
+                            label="Kemiskinan",
+                            icon=":material/payments:"
+                        )
 
-                    st.page_link(
-                        ketenagakerjaan,
-                        label="Ketenagakerjaan",
-                        icon=":material/work:"
-                    )
+                        st.page_link(
+                            ketenagakerjaan,
+                            label="Ketenagakerjaan",
+                            icon=":material/work:"
+                        )
 
-                    st.page_link(
-                        pendidikan,
-                        label="Pendidikan",
-                        icon=":material/school:"
-                    )
+                        st.page_link(
+                            pendidikan,
+                            label="Pendidikan",
+                            icon=":material/school:"
+                        )
 
-                    st.page_link(
-                        penduduk,
-                        label="Kependudukan",
-                        icon=":material/groups:"
-                    )
+                        st.page_link(
+                            penduduk,
+                            label="Kependudukan",
+                            icon=":material/groups:"
+                        )
 
-                    st.page_link(
-                        pengeluaran,
-                        label="Pengeluaran Makanan",
-                        icon=":material/restaurant:"
-                    )
+                        st.page_link(
+                            pengeluaran,
+                            label="Pengeluaran Makanan",
+                            icon=":material/restaurant:"
+                        )
 
-                    st.page_link(
-                        perumahan,
-                        label="Perumahan",
-                        icon=":material/home:"
-                    )
-        # ----------------------------------------------------
+                        st.page_link(
+                            perumahan,
+                            label="Perumahan",
+                            icon=":material/home:"
+                        )
+
+            else:
+
+                with st.container(
+                    key="statistik_sosial_normal"
+                ):
+
+                    with st.popover(
+                        "Statistik Sosial",
+                        use_container_width=True
+                    ):
+
+                        st.page_link(
+                            kemiskinan,
+                            label="Kemiskinan",
+                            icon=":material/payments:"
+                        )
+
+                        st.page_link(
+                            ketenagakerjaan,
+                            label="Ketenagakerjaan",
+                            icon=":material/work:"
+                        )
+
+                        st.page_link(
+                            pendidikan,
+                            label="Pendidikan",
+                            icon=":material/school:"
+                        )
+
+                        st.page_link(
+                            penduduk,
+                            label="Kependudukan",
+                            icon=":material/groups:"
+                        )
+
+                        st.page_link(
+                            pengeluaran,
+                            label="Pengeluaran Makanan",
+                            icon=":material/restaurant:"
+                        )
+
+                        st.page_link(
+                            perumahan,
+                            label="Perumahan",
+                            icon=":material/home:"
+                        )
+
+
+        # ====================================================
         # DOKUMEN
-        # ----------------------------------------------------
+        # ====================================================
 
         with menu4:
 
-            st.page_link(
-                dokumen,
-                label="Dokumen",
-                icon=":material/description:"
-            )
+            if pg == dokumen:
+                with st.container(key="dokumen_aktif"):
+                    st.page_link(
+                        dokumen,
+                        label="Dokumen",
+                        icon=":material/description:"
+                    )
+            else:
+                with st.container(key="dokumen_normal"):
+                    st.page_link(
+                        dokumen,
+                        label="Dokumen",
+                        icon=":material/description:"
+                    )
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # PENCARIAN
-        # ----------------------------------------------------
+        # ====================================================
 
         with menu5:
 
@@ -331,9 +409,9 @@ with header_container:
                 )
 
 
-        # ----------------------------------------------------
+        # ====================================================
         # LOKASI
-        # ----------------------------------------------------
+        # ====================================================
 
         with menu6:
 
@@ -342,6 +420,7 @@ with header_container:
                 use_container_width=True,
                 key="desktop_location_button"
             ):
+
                 st.selectbox(
                     "Pilih wilayah",
                     DAFTAR_WILAYAH,
@@ -349,9 +428,9 @@ with header_container:
                 )
 
 
-    # --------------------------------------------------------
-    # LOGIN ADMIN
-    # --------------------------------------------------------
+    # ========================================================
+    # AKSI HEADER / LOGIN
+    # ========================================================
 
     with header_login:
 
@@ -363,11 +442,16 @@ with header_container:
             gap="small"
         ):
 
+            # ------------------------------------------------
+            # PENCARIAN MOBILE
+            # ------------------------------------------------
+
             with st.popover(
                 "Cari",
                 icon=":material/search:",
                 key="mobile_search_button",
-                help="Cari dokumen"
+                help="Cari dokumen",
+                use_container_width=True
             ):
 
                 st.text_input(
@@ -375,6 +459,11 @@ with header_container:
                     placeholder="Masukkan nama dokumen",
                     key="mobile_header_search"
                 )
+
+
+            # ------------------------------------------------
+            # TOMBOL MENU MOBILE
+            # ------------------------------------------------
 
             if st.button(
                 "Menu",
@@ -386,6 +475,11 @@ with header_container:
 
                 st.session_state["mobile_nav_open"] = True
                 st.rerun()
+
+
+        # ----------------------------------------------------
+        # LOGIN / LOGOUT ADMIN
+        # ----------------------------------------------------
 
         if st.session_state["is_admin"]:
 
@@ -411,19 +505,27 @@ with header_container:
 
 
 # ============================================================
-# NAVIGASI DRAWER MOBILE
+# FUNGSI NAVIGASI MOBILE
 # ============================================================
 
-def mobile_navigation_button(label, page, icon, key):
+def mobile_navigation_button(
+    label,
+    page,
+    icon,
+    key
+):
 
     is_active = pg == page
+
     container_key = (
         f"mobile_nav_item_{key}_active"
         if is_active
         else f"mobile_nav_item_{key}"
     )
 
-    with st.container(key=container_key):
+    with st.container(
+        key=container_key
+    ):
 
         if st.button(
             label,
@@ -434,35 +536,57 @@ def mobile_navigation_button(label, page, icon, key):
         ):
 
             st.session_state["mobile_nav_open"] = False
+
             st.switch_page(page)
 
 
+# ============================================================
+# NAVIGASI DRAWER MOBILE
+# ============================================================
+
 if st.session_state["mobile_nav_open"]:
 
-    with st.container(key="mobile_nav_overlay"):
+    with st.container(
+        key="mobile_nav_overlay"
+    ):
 
-        with st.container(key="mobile_nav_drawer"):
+        with st.container(
+            key="mobile_nav_drawer"
+        ):
 
             drawer_title, drawer_close = st.columns(
                 [5, 1],
                 vertical_alignment="center"
             )
 
+
+            # ------------------------------------------------
+            # JUDUL DRAWER
+            # ------------------------------------------------
+
             with drawer_title:
 
                 st.markdown(
                     """
                     <div class="mobile-drawer-brand">
+
                         <div class="mobile-drawer-brand-name">
                             SISTA
                         </div>
+
                         <div class="mobile-drawer-brand-subtitle">
                             BPS Provinsi Lampung
                         </div>
+
                     </div>
                     """,
                     unsafe_allow_html=True
                 )
+
+
+            # ------------------------------------------------
+            # TOMBOL TUTUP
+            # ------------------------------------------------
 
             with drawer_close:
 
@@ -477,10 +601,20 @@ if st.session_state["mobile_nav_open"]:
                     st.session_state["mobile_nav_open"] = False
                     st.rerun()
 
+
+            # ------------------------------------------------
+            # LABEL NAVIGASI
+            # ------------------------------------------------
+
             st.markdown(
                 '<div class="mobile-nav-label">Navigasi</div>',
                 unsafe_allow_html=True
             )
+
+
+            # ------------------------------------------------
+            # BERANDA
+            # ------------------------------------------------
 
             mobile_navigation_button(
                 "Beranda",
@@ -489,6 +623,11 @@ if st.session_state["mobile_nav_open"]:
                 "home"
             )
 
+
+            # ------------------------------------------------
+            # DASHBOARD
+            # ------------------------------------------------
+
             mobile_navigation_button(
                 "Dashboard",
                 dashboard,
@@ -496,12 +635,22 @@ if st.session_state["mobile_nav_open"]:
                 "dashboard"
             )
 
+
+            # ------------------------------------------------
+            # DOKUMEN
+            # ------------------------------------------------
+
             mobile_navigation_button(
                 "Dokumen",
                 dokumen,
                 ":material/description:",
                 "dokumen"
             )
+
+
+            # ------------------------------------------------
+            # STATISTIK SOSIAL MOBILE
+            # ------------------------------------------------
 
             with st.expander(
                 "Statistik Sosial",
@@ -552,14 +701,27 @@ if st.session_state["mobile_nav_open"]:
                     "perumahan"
                 )
 
-            with st.container(key="mobile_nav_footer"):
+
+            # ------------------------------------------------
+            # FOOTER DRAWER
+            # ------------------------------------------------
+
+            with st.container(
+                key="mobile_nav_footer"
+            ):
 
                 st.markdown(
-                    '<div class="mobile-nav-label mobile-location-label">'
+                    '<div class="mobile-nav-label '
+                    'mobile-location-label">'
                     'Wilayah'
                     '</div>',
                     unsafe_allow_html=True
                 )
+
+
+                # --------------------------------------------
+                # WILAYAH
+                # --------------------------------------------
 
                 st.selectbox(
                     "Pilih wilayah",
@@ -567,6 +729,11 @@ if st.session_state["mobile_nav_open"]:
                     key="mobile_header_wilayah",
                     label_visibility="collapsed"
                 )
+
+
+                # --------------------------------------------
+                # ADMIN MOBILE
+                # --------------------------------------------
 
                 if st.session_state["is_admin"]:
 
@@ -597,7 +764,15 @@ if st.session_state["mobile_nav_open"]:
                         st.rerun()
 
 
-if st.session_state.pop("mobile_login_requested", False):
+# ============================================================
+# LOGIN MOBILE
+# ============================================================
+
+if st.session_state.pop(
+    "mobile_login_requested",
+    False
+):
+
     login_dialog()
 
 
