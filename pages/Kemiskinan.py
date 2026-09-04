@@ -75,8 +75,26 @@ if not data:
 df = pd.DataFrame(data)
 df["tahun"] = pd.to_numeric(df["tahun"], errors="coerce")
 
-# Tentukan nama kolom wilayah di database Anda (ubah jika berbeda, misal: "kabupaten" atau "wilayah")
-kolom_wilayah_db = "wilayah" 
+# Gunakan kolom wilayah jika tersedia. Data kemiskinan tingkat provinsi
+# tidak selalu memiliki dimensi Kabupaten/Kota.
+kolom_wilayah_db = next(
+    (
+        kolom
+        for kolom in (
+            "wilayah",
+            "kabupaten_kota",
+            "nama_wilayah"
+        )
+        if kolom in df.columns
+    ),
+    None
+)
+
+memiliki_kolom_wilayah = kolom_wilayah_db is not None
+
+if not memiliki_kolom_wilayah:
+    kolom_wilayah_db = "_wilayah_tampilan"
+    df[kolom_wilayah_db] = "Provinsi Lampung"
 
 # ============================================================
 # DAFTAR INDIKATOR
@@ -146,7 +164,12 @@ with col_f2:
         tahun_terpilih = st.multiselect("📅 Pilih Tahun", semua_tahun, default=semua_tahun[:3] if len(semua_tahun)>=3 else semua_tahun)
 
 with col_f3:
-    semua_wilayah = sorted(df[kolom_wilayah_db].dropna().unique().tolist()) if kolom_wilayah_db in df.columns else ["Lampung", "Bandar Lampung", "Metro"]
+    semua_wilayah = sorted(
+        df[kolom_wilayah_db]
+        .dropna()
+        .unique()
+        .tolist()
+    )
     pilih_semua_wilayah = st.checkbox("Pilih Semua Kabupaten/Kota", value=True)
     
     if pilih_semua_wilayah:
@@ -295,7 +318,17 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                 with col_b:
                     periode_baru = st.text_input("Periode", placeholder="Misal: Maret / September")
                 with col_c:
-                    wilayah_baru = st.text_input("Kabupaten/Kota", placeholder="Nama Wilayah")
+                    if memiliki_kolom_wilayah:
+                        wilayah_baru = st.text_input(
+                            "Kabupaten/Kota",
+                            placeholder="Nama Wilayah"
+                        )
+                    else:
+                        wilayah_baru = st.text_input(
+                            "Wilayah",
+                            value="Provinsi Lampung",
+                            disabled=True
+                        )
 
                 st.markdown("**Isi nilai per indikator:**")
                 nilai_input = {}
@@ -306,10 +339,11 @@ if is_admin and st.session_state.get("show_admin_panel", False):
 
                 if st.form_submit_button("💾 Simpan Data Baru"):
                     data_baru = {
-                        "tahun": int(tahun_baru), 
-                        "periode": periode_baru,
-                        kolom_wilayah_db: wilayah_baru
+                        "tahun": int(tahun_baru),
+                        "periode": periode_baru
                     }
+                    if memiliki_kolom_wilayah:
+                        data_baru[kolom_wilayah_db] = wilayah_baru
                     data_baru.update(nilai_input)
                     try:
                         supabase_admin.table("kemiskinan").insert(data_baru).execute()
@@ -318,13 +352,21 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                     except Exception as e:
                         st.error(f"Gagal menyimpan data: {e}")
         else:
-            kolom_wajib = ["tahun", "periode", kolom_wilayah_db] + semua_kolom_nilai
+            kolom_wajib = ["tahun", "periode"]
+            kolom_teks = ["periode"]
+
+            if memiliki_kolom_wilayah:
+                kolom_wajib.append(kolom_wilayah_db)
+                kolom_teks.append(kolom_wilayah_db)
+
+            kolom_wajib += semua_kolom_nilai
+
             admin_import_data(
                 supabase_admin=supabase_admin,
                 table_name="kemiskinan",
                 kolom_wajib=kolom_wajib,
                 key_prefix="kemiskinan",
-                kolom_teks=["periode", kolom_wilayah_db]
+                kolom_teks=kolom_teks
             )
 
     # ========================================================
@@ -389,7 +431,23 @@ if is_admin and st.session_state.get("show_admin_panel", False):
                         baris_idx = opsi_hapus.index(target)
                         baris_target = df.iloc[baris_idx]
                         
-                        supabase_admin.table("kemiskinan").delete().eq("tahun", int(baris_target["tahun"])).eq(kolom_wilayah_db, baris_target[kolom_wilayah_db]).eq("periode", baris_target["periode"]).execute()
+                        query_hapus = (
+                            supabase_admin
+                            .table("kemiskinan")
+                            .delete()
+                            .eq("tahun", int(baris_target["tahun"]))
+                        )
+
+                        if memiliki_kolom_wilayah:
+                            query_hapus = query_hapus.eq(
+                                kolom_wilayah_db,
+                                baris_target[kolom_wilayah_db]
+                            )
+
+                        query_hapus.eq(
+                            "periode",
+                            baris_target["periode"]
+                        ).execute()
                         
                         # Perbaikan baris penghapusan session state
                         if "konfirmasi_hapus_kemiskinan" in st.session_state:

@@ -76,7 +76,7 @@ header[data-testid="stHeader"] > div {
     padding-bottom: 60px !important;
     margin-top: -15px;
     position: relative;
-    z-index: 2;
+    z-index: auto;
 }
 
 /* ============================================================
@@ -92,8 +92,32 @@ header[data-testid="stHeader"] > div {
     margin: 0 !important;
     box-sizing: border-box !important;
     z-index: 99999 !important;
+    isolation: isolate;
+    pointer-events: none !important;
     background-color: #0067b9 !important;
-    padding: 8px 40px 18px 40px !important;
+    padding: 15px 40px 25px 40px !important;
+}
+
+/* Area kosong header tidak menutup konten, kontrolnya tetap dapat diklik. */
+.st-key-sista_sticky_header a[href],
+.st-key-sista_sticky_header button:not(:disabled),
+.st-key-sista_sticky_header input,
+.st-key-sista_sticky_header [role="combobox"] {
+    pointer-events: auto !important;
+    touch-action: manipulation;
+}
+
+/* Samakan perilaku klik mouse dan sentuhan pada seluruh kontrol aplikasi. */
+.stApp a[href],
+.stApp button:not(:disabled),
+.stApp summary,
+.stApp input,
+.stApp select,
+.stApp textarea,
+.stApp [role="button"],
+.stApp [role="option"],
+.stApp [role="tab"] {
+    touch-action: manipulation;
 }
 
 .st-key-sista_sticky_header [data-testid="stHorizontalBlock"] {
@@ -103,26 +127,19 @@ header[data-testid="stHeader"] > div {
 /* Identitas Brand BPS */
 .bps-name {
     color: #ffffff !important;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.0;
-    font-style: italic;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.15;
     white-space: nowrap;
 }
 
 .bps-province {
     color: #ffffff !important;
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 0px;
+    font-size: 15px;
+    font-weight: 800;
+    margin-top: 3px;
     letter-spacing: 0.5px;
-    font-style: italic;
     white-space: nowrap;
-}
-
-.bps-name,
-.bps-province {
-    transform: translateY(-3px) !important; 
 }
 
 /* ============================================================
@@ -253,10 +270,6 @@ button[data-testid="stPopoverButton"] {
     min-height: 38px !important;
     padding: 5px 12px !important;
     box-shadow: none !important;
-}
-
-.st-key-header_login_button {
-    transform: translateY(-8px) !important;  /* nilai negatif = naik, sesuaikan angkanya */
 }
 
 .st-key-sista_sticky_header button[kind="primary"] * {
@@ -720,6 +733,7 @@ div[data-testid="stPopoverBody"] [data-testid="stVerticalBlock"] {
         padding: 0 !important;
         z-index: 1000000 !important;
         overflow: hidden !important;
+        pointer-events: auto !important;
         background: rgba(11, 20, 30, 0.58) !important;
         backdrop-filter: blur(2px);
     }
@@ -742,10 +756,20 @@ div[data-testid="stPopoverBody"] [data-testid="stVerticalBlock"] {
         gap: 4px !important;
         overflow-x: hidden !important;
         overflow-y: auto !important;
+        pointer-events: auto !important;
+        overscroll-behavior: contain;
         color: #17365d !important;
         background: #f5fbfc !important;
         box-shadow: -12px 0 32px rgba(0, 35, 70, 0.2) !important;
         animation: mobile-drawer-enter 0.22s ease-out both;
+    }
+
+    .st-key-mobile_nav_drawer button:not(:disabled),
+    .st-key-mobile_nav_drawer summary,
+    .st-key-mobile_nav_drawer input,
+    .st-key-mobile_nav_drawer [role="option"] {
+        pointer-events: auto !important;
+        touch-action: manipulation;
     }
 
     @keyframes mobile-drawer-enter {
