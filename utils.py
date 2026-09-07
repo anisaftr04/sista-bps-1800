@@ -95,7 +95,6 @@ def login_dialog():
 # ============================================================
 # POPUP AKSES ADMIN
 # ============================================================
-
 @st.dialog("🔒 Akses Admin")
 def edit_login_dialog():
 
@@ -120,10 +119,7 @@ def edit_login_dialog():
         """
     ).strip()
 
-    st.markdown(
-        konten,
-        unsafe_allow_html=True
-    )
+    st.html(konten)   # <-- ganti baris ini, tidak perlu unsafe_allow_html lagi
 
     if st.button(
         "Login sebagai Admin",
@@ -131,13 +127,8 @@ def edit_login_dialog():
         use_container_width=True,
         type="primary"
     ):
-
-        st.session_state[
-            "trigger_login_dialog"
-        ] = True
-
+        st.session_state["trigger_login_dialog"] = True
         st.rerun()
-
 
 # ============================================================
 # REQUEST LOGIN DARI HALAMAN

@@ -1,8 +1,9 @@
 import streamlit as st
-
+import textwrap
 from utils import (
     load_css,
-    login_dialog
+    login_dialog,
+    show_login_dialog_if_requested
 )
 
 
@@ -23,6 +24,7 @@ st.set_page_config(
 # ============================================================
 
 load_css()
+show_login_dialog_if_requested()
 
 
 # ============================================================
@@ -165,9 +167,7 @@ statistik_sosial_aktif = pg in [
 # HEADER STICKY
 # ============================================================
 
-header_container = st.container(
-    key="sista_sticky_header"
-)
+header_container = st.container(key="sista_sticky_header")
 
 with header_container:
 
@@ -536,9 +536,7 @@ def mobile_navigation_button(
         ):
 
             st.session_state["mobile_nav_open"] = False
-
             st.switch_page(page)
-
 
 # ============================================================
 # NAVIGASI DRAWER MOBILE
@@ -546,38 +544,29 @@ def mobile_navigation_button(
 
 if st.session_state["mobile_nav_open"]:
 
-    with st.container(
-        key="mobile_nav_overlay"
-    ):
+    with st.container(key="mobile_nav_overlay"):
 
-        with st.container(
-            key="mobile_nav_drawer"
-        ):
+        with st.container(key="mobile_nav_drawer"):
 
             drawer_title, drawer_close = st.columns(
                 [5, 1],
                 vertical_alignment="center"
             )
 
-
             # ------------------------------------------------
             # JUDUL DRAWER
             # ------------------------------------------------
-
             with drawer_title:
 
                 st.markdown(
                     """
                     <div class="mobile-drawer-brand">
-
                         <div class="mobile-drawer-brand-name">
                             SISTA
                         </div>
-
                         <div class="mobile-drawer-brand-subtitle">
                             BPS Provinsi Lampung
                         </div>
-
                     </div>
                     """,
                     unsafe_allow_html=True
@@ -605,17 +594,14 @@ if st.session_state["mobile_nav_open"]:
             # ------------------------------------------------
             # LABEL NAVIGASI
             # ------------------------------------------------
-
             st.markdown(
                 '<div class="mobile-nav-label">Navigasi</div>',
                 unsafe_allow_html=True
             )
 
-
             # ------------------------------------------------
             # BERANDA
             # ------------------------------------------------
-
             mobile_navigation_button(
                 "Beranda",
                 home,
@@ -623,11 +609,9 @@ if st.session_state["mobile_nav_open"]:
                 "home"
             )
 
-
             # ------------------------------------------------
             # DASHBOARD
             # ------------------------------------------------
-
             mobile_navigation_button(
                 "Dashboard",
                 dashboard,
@@ -635,11 +619,9 @@ if st.session_state["mobile_nav_open"]:
                 "dashboard"
             )
 
-
             # ------------------------------------------------
             # DOKUMEN
             # ------------------------------------------------
-
             mobile_navigation_button(
                 "Dokumen",
                 dokumen,
@@ -647,11 +629,9 @@ if st.session_state["mobile_nav_open"]:
                 "dokumen"
             )
 
-
             # ------------------------------------------------
             # STATISTIK SOSIAL MOBILE
             # ------------------------------------------------
-
             with st.expander(
                 "Statistik Sosial",
                 expanded=statistik_sosial_aktif,
@@ -705,10 +685,7 @@ if st.session_state["mobile_nav_open"]:
             # ------------------------------------------------
             # FOOTER DRAWER
             # ------------------------------------------------
-
-            with st.container(
-                key="mobile_nav_footer"
-            ):
+            with st.container(key="mobile_nav_footer"):
 
                 st.markdown(
                     '<div class="mobile-nav-label '
@@ -718,11 +695,9 @@ if st.session_state["mobile_nav_open"]:
                     unsafe_allow_html=True
                 )
 
-
                 # --------------------------------------------
                 # WILAYAH
                 # --------------------------------------------
-
                 st.selectbox(
                     "Pilih wilayah",
                     DAFTAR_WILAYAH,
@@ -734,7 +709,6 @@ if st.session_state["mobile_nav_open"]:
                 # --------------------------------------------
                 # ADMIN MOBILE
                 # --------------------------------------------
-
                 if st.session_state["is_admin"]:
 
                     if st.button(
@@ -768,11 +742,7 @@ if st.session_state["mobile_nav_open"]:
 # LOGIN MOBILE
 # ============================================================
 
-if st.session_state.pop(
-    "mobile_login_requested",
-    False
-):
-
+if st.session_state.pop("mobile_login_requested",False):
     login_dialog()
 
 
