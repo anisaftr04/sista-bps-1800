@@ -18,14 +18,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-
 # ============================================================
 # LOAD CSS
 # ============================================================
 
 load_css()
 show_login_dialog_if_requested()
-
 
 # ============================================================
 # SESSION STATE
@@ -36,7 +34,6 @@ if "is_admin" not in st.session_state:
 
 if "mobile_nav_open" not in st.session_state:
     st.session_state["mobile_nav_open"] = False
-
 
 # ============================================================
 # DAFTAR WILAYAH
@@ -60,7 +57,6 @@ DAFTAR_WILAYAH = [
     "Tulang Bawang Barat",
     "Way Kanan"
 ]
-
 
 # ============================================================
 # DAFTAR HALAMAN
@@ -127,11 +123,9 @@ upload = st.Page(
     icon=":material/upload:"
 )
 
-
 # ============================================================
 # CEK HALAMAN STATISTIK SOSIAL YANG AKTIF
 # ============================================================
-
 pg = st.navigation(
     [
         home,
@@ -148,11 +142,9 @@ pg = st.navigation(
     position="hidden"
 )
 
-
 # ------------------------------------------------------------
 # True jika sedang berada di salah satu halaman Statistik Sosial
 # ------------------------------------------------------------
-
 statistik_sosial_aktif = pg in [
     kemiskinan,
     ketenagakerjaan,
@@ -162,32 +154,25 @@ statistik_sosial_aktif = pg in [
     perumahan
 ]
 
-
 # ============================================================
 # HEADER STICKY
 # ============================================================
-
 header_container = st.container(key="sista_sticky_header")
 
 with header_container:
-
     header_logo, header_menu, header_login = st.columns(
         [2.0, 5.0, 0.7],
         vertical_alignment="center"
     )
 
-
     # ========================================================
     # LOGO BPS
     # ========================================================
-
     with header_logo:
-
         logo_col, text_col = st.columns(
             [0.5, 2.2],
             vertical_alignment="center"
         )
-
         with logo_col:
 
             st.image(
@@ -210,23 +195,18 @@ with header_container:
                 unsafe_allow_html=True
             )
 
-
     # ========================================================
     # MENU NAVBAR
     # ========================================================
-
     with header_menu:
-
         menu1, menu2, menu3, menu4, menu5, menu6 = st.columns(
             [0.8, 0.8, 1.15, 1.15, 0.65, 0.65],
             vertical_alignment="center"
         )
 
-
         # ====================================================
         # BERANDA
         # ====================================================
-
         with menu1:
 
             if pg == home:
@@ -244,11 +224,9 @@ with header_container:
                         icon=":material/home:"
                 )
 
-
         # ====================================================
         # DASHBOARD
         # ====================================================
-
         with menu2:
 
             if pg == dashboard:
@@ -266,11 +244,9 @@ with header_container:
                         icon=":material/dashboard:"
                     )
 
-
         # ====================================================
         # STATISTIK SOSIAL
         # ====================================================
-
         with menu3:
 
             if statistik_sosial_aktif:
@@ -321,7 +297,6 @@ with header_container:
                         )
 
             else:
-
                 with st.container(
                     key="statistik_sosial_normal"
                 ):
@@ -367,11 +342,9 @@ with header_container:
                             icon=":material/home:"
                         )
 
-
         # ====================================================
         # DOKUMEN
         # ====================================================
-
         with menu4:
 
             if pg == dokumen:

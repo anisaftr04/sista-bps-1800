@@ -262,26 +262,18 @@ with col_f1:
     # PILIH KATEGORI
     # =====================================================
 
-    col_kat_title, col_kat_all = st.columns(
-        [1.25, 1]
+    st.markdown(
+        "🏷️ **Kategori**"
     )
 
-    with col_kat_title:
-
-        st.markdown(
-            "🏷️ **Kategori**"
+    semua_kategori_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key=(
+            "chk_semua_kategori_"
+            "perumahan"
         )
-
-    with col_kat_all:
-
-        semua_kategori_chk = st.checkbox(
-            "Pilih Semua",
-            value=True,
-            key=(
-                "chk_semua_kategori_"
-                "perumahan"
-            )
-        )
+    )
 
 
     # -----------------------------------------------------
@@ -395,26 +387,18 @@ except Exception:
 
 with col_f2:
 
-    col_thn_title, col_thn_all = st.columns(
-        [1.25, 1]
+    st.markdown(
+        "📅 **Tahun**"
     )
 
-    with col_thn_title:
-
-        st.markdown(
-            "📅 **Tahun**"
+    semua_tahun_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key=(
+            "chk_semua_tahun_"
+            "perumahan"
         )
-
-    with col_thn_all:
-
-        semua_tahun_chk = st.checkbox(
-            "Pilih Semua",
-            value=True,
-            key=(
-                "chk_semua_tahun_"
-                "perumahan"
-            )
-        )
+    )
 
 
     # -----------------------------------------------------
@@ -531,26 +515,18 @@ except Exception:
 
 with col_f3:
 
-    col_wil_title, col_wil_all = st.columns(
-        [1.25, 1]
+    st.markdown(
+        "📍 **Kabupaten/Kota**"
     )
 
-    with col_wil_title:
-
-        st.markdown(
-            "📍 **Kabupaten/Kota**"
+    semua_wilayah_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key=(
+            "chk_semua_wilayah_"
+            "perumahan"
         )
-
-    with col_wil_all:
-
-        semua_wilayah_chk = st.checkbox(
-            "Pilih Semua",
-            value=True,
-            key=(
-                "chk_semua_wilayah_"
-                "perumahan"
-            )
-        )
+    )
 
 
     # -----------------------------------------------------

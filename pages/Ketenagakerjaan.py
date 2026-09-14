@@ -249,7 +249,7 @@ if not df_filtered.empty:
     df_tampilkan = df_pivot.copy()
     for col in kolom_tahun_urut:
         df_tampilkan[col] = df_tampilkan[col].apply(
-            lambda x: f"{x:,.0f}".replace(",", ".") if pd.notnull(x) else "-"
+            lambda x: f"{x:,.3f}".replace(",", ".") if pd.notnull(x) else "-"
         )
 
     st.subheader(":material/list_alt: Data")

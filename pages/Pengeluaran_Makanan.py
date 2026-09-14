@@ -83,6 +83,17 @@ DAFTAR_KABKOTA = [
 
 
 # =========================================================
+# DAFTAR KATEGORI
+# =========================================================
+
+DAFTAR_KATEGORI = {
+    "miskin": "Miskin",
+    "tidak_miskin": "Tidak Miskin",
+    "miskin_dan_tidak_miskin": "Miskin dan Tidak Miskin"
+}
+
+
+# =========================================================
 # JUDUL
 # =========================================================
 
@@ -140,8 +151,52 @@ with col_f1:
         label_visibility="collapsed"
     )
 
+    nama_tabel_input = daftar_data[indikator_input]
 
-nama_tabel_input = daftar_data[indikator_input]
+
+    # =====================================================
+    # PILIH KATEGORI
+    # =====================================================
+
+    st.markdown("🏷️ **Kategori**")
+
+    semua_kategori_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key="chk_semua_kategori_pm"
+    )
+
+    prev_key_kategori = "_prev_chk_semua_kategori_pm"
+
+    if prev_key_kategori not in st.session_state:
+
+        st.session_state[prev_key_kategori] = semua_kategori_chk
+
+    elif st.session_state[prev_key_kategori] != semua_kategori_chk:
+
+        for kode_kategori in DAFTAR_KATEGORI:
+
+            st.session_state[
+                f"kat_pm_{kode_kategori}"
+            ] = semua_kategori_chk
+
+        st.session_state[prev_key_kategori] = semua_kategori_chk
+
+
+    with st.container(height=100, key="box_kategori_pm"):
+
+        kategori_terpilih_input = []
+
+        for kode_kategori, nama_kategori_item in DAFTAR_KATEGORI.items():
+
+            cek_kategori = st.checkbox(
+                nama_kategori_item,
+                value=semua_kategori_chk,
+                key=f"kat_pm_{kode_kategori}"
+            )
+
+            if cek_kategori:
+                kategori_terpilih_input.append(kode_kategori)
 
 
 # =========================================================
@@ -365,6 +420,10 @@ if submitted:
     ] = indikator_input
 
     st.session_state[
+        "kategori_final_pm"
+    ] = kategori_terpilih_input
+
+    st.session_state[
         "tahun_final_pm"
     ] = tahun_terpilih_input
 
@@ -383,7 +442,7 @@ if not st.session_state.get(
 ):
 
     st.info(
-        "👆 Silakan sesuaikan pilihan tahun dan "
+        "👆 Silakan sesuaikan pilihan kategori, tahun, dan "
         "wilayah di atas, lalu klik tombol "
         "**Tampilkan Data**."
     )
@@ -402,6 +461,11 @@ indikator = st.session_state.get(
 
 nama_tabel = daftar_data[indikator]
 
+kategori_terpilih = st.session_state.get(
+    "kategori_final_pm",
+    list(DAFTAR_KATEGORI.keys())
+)
+
 tahun_terpilih = st.session_state.get(
     "tahun_final_pm",
     []
@@ -415,6 +479,15 @@ wilayah_terpilih = st.session_state.get(
 # =========================================================
 # VALIDASI FILTER
 # =========================================================
+
+if not kategori_terpilih:
+
+    st.warning(
+        "⚠️ Silakan pilih minimal satu kategori."
+    )
+
+    st.stop()
+
 
 if (
     not tahun_terpilih
@@ -559,8 +632,9 @@ st.subheader(
 
 st.write(
     f"Menampilkan data untuk "
-    f"{len(wilayah_terpilih)} wilayah dan "
-    f"{len(tahun_terpilih)} tahun."
+    f"{len(wilayah_terpilih)} wilayah, "
+    f"{len(tahun_terpilih)} tahun, dan "
+    f"{len(kategori_terpilih)} kategori."
 )
 
 
@@ -578,6 +652,17 @@ if df_filtered.empty:
 else:
 
     # =====================================================
+    # KATEGORI YANG DIPAKAI (SESUAI FILTER)
+    # =====================================================
+
+    kolom_kategori = [
+        kategori
+        for kategori in kategori_terpilih
+        if kategori in df_filtered.columns
+    ]
+
+
+    # =====================================================
     # TABEL PIVOT
     # =====================================================
 
@@ -586,26 +671,15 @@ else:
             "tahun",
             "kabupaten_kota"
         ],
-        value_vars=[
-            "miskin",
-            "tidak_miskin",
-            "miskin_dan_tidak_miskin"
-        ],
+        value_vars=kolom_kategori,
         var_name="kategori",
         value_name="nilai"
     )
 
 
-    nama_kategori = {
-        "miskin": "Miskin",
-        "tidak_miskin": "Tidak Miskin",
-        "miskin_dan_tidak_miskin":
-            "Miskin dan Tidak Miskin"
-    }
-
     df_long["kategori"] = (
         df_long["kategori"]
-        .map(nama_kategori)
+        .map(DAFTAR_KATEGORI)
     )
 
 

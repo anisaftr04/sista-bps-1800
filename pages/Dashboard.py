@@ -69,7 +69,12 @@ DAFTAR_TABEL = {
     ],
 
     "Kemiskinan": [
-        "kemiskinan"
+        "p0_persen_pend_miskin",
+        "garis_kemiskinan",
+        "jumlah_penduduk_miskin",
+        "p1_indeks_kedalaman",
+        "p2_indeks_keparahan",
+        "gini_ratio",
     ],
 
     "Ketenagakerjaan": [
