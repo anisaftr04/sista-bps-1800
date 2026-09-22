@@ -1,7 +1,5 @@
-
-from supabase import create_client, Client
-import os
 import streamlit as st
+from supabase import create_client, Client
 
 url = st.secrets["SUPABASE_URL"]
 key = st.secrets["SUPABASE_KEY"]
@@ -71,6 +69,8 @@ if st.button("💾 Simpan Dokumen"):
 
     if uploaded_file is None:
         st.warning("Silakan pilih file terlebih dahulu.")
+    elif not nama_dokumen.strip():
+        st.warning("Nama Dokumen wajib diisi sebelum menyimpan.")
     else:
         try:
             file_path = f"{kabupaten}/{uploaded_file.name}"
@@ -82,7 +82,7 @@ if st.button("💾 Simpan Dokumen"):
         )
             st.write("Upload selesai")
             supabase.table("dokumen").insert({
-    "nama_dokumen": nama_dokumen,
+    "nama_dokumen": nama_dokumen.strip(),
     "nama_file": uploaded_file.name,
     "kabupaten": kabupaten,
     "kategori": kategori,

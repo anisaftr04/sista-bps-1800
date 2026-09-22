@@ -82,19 +82,199 @@ st.markdown("### 🎛️ Filter Data")
 col_f1, col_f2, col_f3 = st.columns(3)
 
 with col_f1:
-    indikator = st.selectbox(
+    indikator_input = st.selectbox(
         "📊 Pilih Indikator",
         list(daftar_indikator.keys())
     )
 
+nama_tabel_input = daftar_indikator[indikator_input]
+
+# ============================================================
+# AMBIL DATA UNTUK MENGISI PILIHAN TAHUN & WILAYAH
+# (mengikuti indikator yang sedang dipilih di dropdown)
+# ============================================================
+
+try:
+    response_opt = supabase.table(nama_tabel_input).select("*").execute()
+    data_opt = response_opt.data
+except Exception as e:
+    st.error(f"Gagal mengambil data dari Supabase: {e}")
+    st.stop()
+
+if not data_opt:
+    st.warning(f"Data untuk indikator '{indikator_input}' belum tersedia.")
+    st.stop()
+
+df_opt = pd.DataFrame(data_opt)
+df_opt["tahun"] = pd.to_numeric(df_opt["tahun"], errors="coerce")
+
+if "kabupaten_kota" not in df_opt.columns:
+    st.error(f"Tabel '{nama_tabel_input}' tidak memiliki kolom 'kabupaten_kota'. Cek struktur tabel di Supabase.")
+    st.stop()
+
+# ============================================================
+# FILTER: TAHUN & WILAYAH
+# ============================================================
+
+with col_f2:
+
+    st.markdown("📅 **Tahun**")
+
+    semua_tahun_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key="chk_semua_tahun_kemiskinan"
+    )
+
+    semua_tahun_opt = sorted(
+        df_opt["tahun"].dropna().unique().astype(int).tolist()
+    )
+
+    prev_key_tahun = "_prev_chk_semua_tahun_kemiskinan"
+
+    if prev_key_tahun not in st.session_state:
+
+        st.session_state[prev_key_tahun] = semua_tahun_chk
+
+    elif st.session_state[prev_key_tahun] != semua_tahun_chk:
+
+        for thn in semua_tahun_opt:
+
+            st.session_state[f"thn_kemiskinan_{thn}"] = semua_tahun_chk
+
+        st.session_state[prev_key_tahun] = semua_tahun_chk
+
+    with st.container(height=200, key="box_tahun_kemiskinan"):
+
+        tahun_terpilih_input = []
+
+        if semua_tahun_opt:
+
+            for thn in semua_tahun_opt:
+
+                cek_tahun = st.checkbox(
+                    str(thn),
+                    value=semua_tahun_chk,
+                    key=f"thn_kemiskinan_{thn}"
+                )
+
+                if cek_tahun:
+                    tahun_terpilih_input.append(int(thn))
+
+        else:
+
+            st.warning("Tidak ada data tahun.")
+
+with col_f3:
+
+    st.markdown("📍 **Kabupaten/Kota**")
+
+    semua_wilayah_chk = st.checkbox(
+        "Pilih Semua",
+        value=True,
+        key="chk_semua_wilayah_kemiskinan"
+    )
+
+    semua_wilayah_opt = sorted(
+        df_opt["kabupaten_kota"].dropna().unique().tolist()
+    )
+
+    prev_key_wilayah = "_prev_chk_semua_wilayah_kemiskinan"
+
+    if prev_key_wilayah not in st.session_state:
+
+        st.session_state[prev_key_wilayah] = semua_wilayah_chk
+
+    elif st.session_state[prev_key_wilayah] != semua_wilayah_chk:
+
+        for wil in semua_wilayah_opt:
+
+            st.session_state[f"wil_kemiskinan_{wil}"] = semua_wilayah_chk
+
+        st.session_state[prev_key_wilayah] = semua_wilayah_chk
+
+    with st.container(height=200, key="box_wilayah_kemiskinan"):
+
+        wilayah_terpilih_input = []
+
+        if semua_wilayah_opt:
+
+            for wil in semua_wilayah_opt:
+
+                cek_wil = st.checkbox(
+                    wil,
+                    value=semua_wilayah_chk,
+                    key=f"wil_kemiskinan_{wil}"
+                )
+
+                if cek_wil:
+                    wilayah_terpilih_input.append(wil)
+
+        else:
+
+            st.warning("Tidak ada data wilayah.")
+
+# ============================================================
+# TOMBOL TAMPILKAN DATA
+# ============================================================
+
+st.markdown("")
+
+submitted = st.button("🔍 Tampilkan Data", use_container_width=True)
+
+# ============================================================
+# SIMPAN FILTER
+# ============================================================
+
+if submitted:
+    st.session_state["submitted_kemiskinan"] = True
+    st.session_state["indikator_final_kemiskinan"] = indikator_input
+    st.session_state["tahun_final_kemiskinan"] = tahun_terpilih_input
+    st.session_state["wilayah_final_kemiskinan"] = wilayah_terpilih_input
+
+# ============================================================
+# JIKA BELUM SUBMIT
+# ============================================================
+
+if not st.session_state.get("submitted_kemiskinan", False):
+    st.info(
+        "👆 Silakan sesuaikan pilihan indikator, tahun, dan "
+        "wilayah di atas, lalu klik **Tampilkan Data**."
+    )
+    st.stop()
+
+# ============================================================
+# AMBIL FILTER FINAL
+# ============================================================
+
+indikator = st.session_state.get(
+    "indikator_final_kemiskinan",
+    list(daftar_indikator.keys())[0]
+)
+
 nama_tabel = daftar_indikator[indikator]
 
+tahun_terpilih = st.session_state.get("tahun_final_kemiskinan", [])
+wilayah_terpilih = st.session_state.get("wilayah_final_kemiskinan", [])
+
 # ============================================================
-# AMBIL DATA (dari tabel indikator yang sedang dipilih)
+# VALIDASI FILTER
 # ============================================================
 
-response = supabase.table(nama_tabel).select("*").execute()
-data = response.data
+if not tahun_terpilih or not wilayah_terpilih:
+    st.warning("⚠️ Silakan pilih minimal satu Tahun dan satu Kabupaten/Kota.")
+    st.stop()
+
+# ============================================================
+# AMBIL DATA UTAMA (sesuai indikator yang disubmit)
+# ============================================================
+
+try:
+    response = supabase.table(nama_tabel).select("*").execute()
+    data = response.data
+except Exception as e:
+    st.error(f"Gagal mengambil data dari Supabase: {e}")
+    st.stop()
 
 if not data:
     st.warning(f"Data untuk indikator '{indikator}' belum tersedia.")
@@ -105,38 +285,6 @@ df["tahun"] = pd.to_numeric(df["tahun"], errors="coerce")
 
 if "kabupaten_kota" not in df.columns:
     st.error(f"Tabel '{nama_tabel}' tidak memiliki kolom 'kabupaten_kota'. Cek struktur tabel di Supabase.")
-    st.stop()
-
-# ============================================================
-# FILTER: TAHUN & WILAYAH
-# ============================================================
-
-with col_f2:
-    semua_tahun = sorted(df["tahun"].dropna().unique().tolist())
-    pilih_semua_tahun = st.checkbox("Pilih Semua Tahun", value=True)
-
-    if pilih_semua_tahun:
-        tahun_terpilih = st.multiselect("📅 Pilih Tahun", semua_tahun, default=semua_tahun)
-    else:
-        tahun_terpilih = st.multiselect(
-            "📅 Pilih Tahun", semua_tahun,
-            default=semua_tahun[:3] if len(semua_tahun) >= 3 else semua_tahun
-        )
-
-with col_f3:
-    semua_wilayah = sorted(df["kabupaten_kota"].dropna().unique().tolist())
-    pilih_semua_wilayah = st.checkbox("Pilih Semua Kabupaten/Kota", value=True)
-
-    if pilih_semua_wilayah:
-        wilayah_terpilih = st.multiselect("📍 Pilih Kabupaten/Kota", semua_wilayah, default=semua_wilayah)
-    else:
-        wilayah_terpilih = st.multiselect(
-            "📍 Pilih Kabupaten/Kota", semua_wilayah,
-            default=semua_wilayah[:3] if len(semua_wilayah) >= 3 else semua_wilayah
-        )
-
-if not tahun_terpilih or not wilayah_terpilih:
-    st.warning("⚠️ Silakan pilih minimal satu Tahun dan satu Kabupaten/Kota.")
     st.stop()
 
 # ============================================================
@@ -156,7 +304,7 @@ df_matrix.columns.name = None
 df_matrix = df_matrix.rename(columns={"kabupaten_kota": "Kabupaten/Kota"})
 
 # ============================================================
-# TAMPILAN TABEL MATRIKS  # <-- BARU: pakai "-" untuk data kosong
+# TAMPILAN TABEL MATRIKS (pakai "-" untuk data kosong)
 # ============================================================
 
 st.markdown("---")
@@ -185,7 +333,7 @@ st.dataframe(
 )
 
 # ============================================================
-# DOWNLOAD EXCEL MATRIKS  # <-- BARU: Excel juga pakai versi "-"
+# DOWNLOAD EXCEL MATRIKS (Excel juga pakai versi "-")
 # ============================================================
 
 output = BytesIO()

@@ -69,6 +69,8 @@ if st.button("💾 Simpan Dokumen"):
 
     if uploaded_file is None:
         st.warning("Silakan pilih file terlebih dahulu.")
+    elif not nama_dokumen.strip():
+        st.warning("Nama Dokumen wajib diisi sebelum menyimpan.")
     else:
         try:
             file_path = f"{kabupaten}/{uploaded_file.name}"
@@ -80,7 +82,7 @@ if st.button("💾 Simpan Dokumen"):
         )
             st.write("Upload selesai")
             supabase.table("dokumen").insert({
-    "nama_dokumen": nama_dokumen,
+    "nama_dokumen": nama_dokumen.strip(),
     "nama_file": uploaded_file.name,
     "kabupaten": kabupaten,
     "kategori": kategori,
@@ -120,23 +122,40 @@ else:
 
         with st.container(border=True):
 
-            st.subheader(f"📄 {dok['nama_dokumen']}")
+            # Fallback: kalau nama_dokumen kosong (data lama sebelum
+            # validasi ditambahkan), pakai nama file asli sebagai judul.
+            judul = (
+                dok.get("nama_dokumen")
+                or dok.get("nama_file")
+                or "(Tanpa Nama)"
+            )
 
-            st.write(f"**Kabupaten :** {dok['kabupaten']}")
-            st.write(f"**Kategori :** {dok['kategori']}")
-            st.write(f"**Keterangan :** {dok['keterangan']}")
+            st.subheader(f"📄 {judul}")
+
+            col_info1, col_info2 = st.columns(2)
+
+            with col_info1:
+                st.write(f"**Kabupaten/Kota :** {dok.get('kabupaten') or '-'}")
+                st.write(f"**Kategori :** {dok.get('kategori') or '-'}")
+
+            with col_info2:
+                st.write(f"**Nama File :** {dok.get('nama_file') or '-'}")
+                st.write(
+                    f"**Keterangan :** "
+                    f"{dok.get('keterangan') or 'Tidak ada keterangan'}"
+                )
 
             col1, col2 = st.columns(2)
 
             with col1:
 
-                url = supabase.storage.from_("dokumen").get_public_url(
+                doc_url = supabase.storage.from_("dokumen").get_public_url(
                     dok["path_file"]
                 )
 
                 st.link_button(
                     "📥 Download",
-                    url
+                    doc_url
                 )
 
             with col2:
