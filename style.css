@@ -1791,3 +1791,8 @@ a[data-testid="stPageLink-NavLink"]::after {
     border-radius: 3px 3px 0 0 !important;
     pointer-events: none !important;
 }
+
+/* Popover panduan dibuat lebih lebar agar nyaman dibaca */
+div[data-testid="stPopoverBody"]:has(.panduan-lebar) {
+    width: 380px !important;
+}
