@@ -117,6 +117,12 @@ perumahan = st.Page(
     icon=":material/home:"
 )
 
+statistik_lainnya = st.Page(
+    "pages/Statistik_Sosial_Lainnya.py",
+    title="Statistik Sosial Lainnya",
+    icon=":material/category:"
+)
+
 upload = st.Page(
     "pages/Upload.py",
     title="Upload",
@@ -137,6 +143,7 @@ pg = st.navigation(
         penduduk,
         pengeluaran,
         perumahan,
+        statistik_lainnya,
         upload
     ],
     position="hidden"
@@ -151,7 +158,8 @@ statistik_sosial_aktif = pg in [
     pendidikan,
     penduduk,
     pengeluaran,
-    perumahan
+    perumahan,
+    statistik_lainnya,
 ]
 
 # ============================================================
@@ -296,6 +304,12 @@ with header_container:
                             icon=":material/home:"
                         )
 
+                        st.page_link(
+                            statistik_lainnya,
+                            label="Statistik Sosial Lainnya",
+                            icon=":material/category:"
+                        )
+
             else:
                 with st.container(
                     key="statistik_sosial_normal"
@@ -341,6 +355,14 @@ with header_container:
                             label="Perumahan",
                             icon=":material/home:"
                         )
+
+                        st.page_link(
+                            statistik_lainnya,
+                            label="Statistik Sosial Lainnya",
+                            icon=":material/category:"
+                        )                    
+
+                        
 
         # ====================================================
         # DOKUMEN
@@ -652,6 +674,13 @@ if st.session_state["mobile_nav_open"]:
                     perumahan,
                     ":material/home:",
                     "perumahan"
+                )
+
+                mobile_navigation_button(
+                    "Statistik Sosial Lainnya",
+                    statistik_lainnya,
+                    ":material/category:",
+                    "statistik_sosial_lainnya"
                 )
 
 

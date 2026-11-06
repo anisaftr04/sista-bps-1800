@@ -26,21 +26,22 @@ nama_dokumen = st.text_input(
 kabupaten = st.selectbox(
     "📍 Kabupaten/Kota",
     [
-        "Bandar Lampung",
-        "Metro",
+        "Lampung Barat",
+        "Tanggamus"
         "Lampung Selatan",
         "Lampung Timur",
         "Lampung Tengah",
-        "Lampung Barat",
         "Lampung Utara",
         "Way Kanan",
+        "Tulang Bawang",
         "Pesawaran",
         "Pringsewu",
-        "Mesuji",
-        "Tulang Bawang",
+        "Mesuji"
         "Tulang Bawang Barat",
         "Pesisir Barat",
-        "Tanggamus"
+        "Bandar Lampung",
+        "Metro",
+        "Provinsi Lampung"
     ]
 )
 
@@ -51,6 +52,7 @@ kategori = st.selectbox(
         "Laporan",
         "Rekap",
         "Presentasi",
+        "Syntax",
         "Lainnya"
     ]
 )

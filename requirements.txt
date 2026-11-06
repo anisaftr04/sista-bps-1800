@@ -1,7 +1,7 @@
 streamlit==1.63.0
 pandas
 supabase
-plotly
+plotly>=5.24
 python-docx
 python-pptx
 openpyxl

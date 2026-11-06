@@ -149,6 +149,84 @@ def show_login_dialog_if_requested():
 
 
 # ============================================================
+# GULIR OTOMATIS KE PANEL ADMIN
+# ============================================================
+
+def scroll_ke_panel_admin():
+    """Menggulir halaman ke judul 'Panel Admin' sekali, setelah klik Edit.
+
+    Judul panel dicari berdasarkan teksnya, jadi berlaku untuk semua
+    halaman yang memakai judul '⚙️ Panel Admin ...'. Pencarian diulang
+    sebentar karena panel baru muncul setelah data selesai dimuat.
+    """
+
+    kode = """
+        <script>
+        (function () {
+            var doc = window.parent.document;
+
+            // Jarak judul dari tepi atas layar (px).
+            // Makin kecil = halaman tergulir makin ke bawah.
+            // Tinggi header biru sekitar 100 px, jadi jangan di bawah itu.
+            var JARAK = 120;
+
+            var percobaan = 0;
+
+            function cari() {
+                var judul = doc.querySelectorAll("h1, h2, h3, h4");
+                for (var i = 0; i < judul.length; i++) {
+                    if (judul[i].textContent.indexOf("Panel Admin") !== -1) {
+                        return judul[i];
+                    }
+                }
+                return null;
+            }
+
+            var timer = setInterval(function () {
+                var judul = cari();
+
+                if (judul) {
+                    clearInterval(timer);
+
+                    judul.style.scrollMarginTop = JARAK + "px";
+                    judul.scrollIntoView({behavior: "smooth", block: "start"});
+
+                    // Isi panel masih dimuat setelah judul muncul, jadi
+                    // halaman belum cukup panjang. Ulangi beberapa kali
+                    // sampai judul benar-benar berada di posisi atas.
+                    [600, 1400, 2400].forEach(function (ms) {
+                        setTimeout(function () {
+                            if (judul.getBoundingClientRect().top > JARAK + 8) {
+                                judul.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start"
+                                });
+                            }
+                        }, ms);
+                    });
+
+                    return;
+                }
+
+                percobaan += 1;
+                if (percobaan > 50) {
+                    clearInterval(timer);
+                }
+            }, 200);
+        })();
+        </script>
+        """
+
+    if hasattr(st, "iframe"):
+        # Streamlit versi baru
+        st.iframe(kode, height=1)
+    else:
+        # Streamlit versi lama (mis. 1.63)
+        import streamlit.components.v1 as components
+        components.html(kode, height=0)
+
+
+# ============================================================
 # TOMBOL EDIT
 # ============================================================
 
@@ -159,6 +237,20 @@ def admin_edit_button():
         st.session_state[
             "show_admin_panel"
         ] = False
+
+
+    # Sembunyikan tombol Edit saat admin sudah berada di mode edit.
+    # Tombol muncul lagi setelah logout (atau panel ditutup).
+    if (
+        st.session_state.get("is_admin", False)
+        and st.session_state.get("show_admin_panel", False)
+    ):
+
+        # Baru saja klik Edit: gulir ke panel (hanya sekali)
+        if st.session_state.pop("scroll_ke_panel_admin", False):
+            scroll_ke_panel_admin()
+
+        return
 
 
     if st.button(
@@ -173,6 +265,10 @@ def admin_edit_button():
 
             st.session_state[
                 "show_admin_panel"
+            ] = True
+
+            st.session_state[
+                "scroll_ke_panel_admin"
             ] = True
 
             st.rerun()
